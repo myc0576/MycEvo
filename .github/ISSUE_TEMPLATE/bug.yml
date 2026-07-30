@@ -1,0 +1,17 @@
+name: Bug report
+description: Report a reproducible MycEvo defect without private data.
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Sanitized reproduction
+      description: Include commands and expected/actual behavior. Remove credentials, private prompts, traces, and absolute user paths.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MycEvo version
+    validations:
+      required: true

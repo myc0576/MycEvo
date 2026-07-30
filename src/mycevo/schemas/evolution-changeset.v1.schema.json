@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mycevo.dev/schemas/evolution-changeset.v1.schema.json",
+  "title": "MycEvo EvolutionChangeSet v1",
+  "description": "A validated, policy-bound, candidate-only ChangeSet. It is not an evaluation, decision, apply receipt, or canonical pointer event.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "change_set_id", "base_graph_hash", "provenance", "deltas", "effective_budget", "allowed_operations", "policy_hash"],
+  "properties": {
+    "schema": {"const": "mycevo.evolution_changeset.v1"},
+    "change_set_id": {"$ref": "external-proposal.v1.schema.json#/$defs/identifier"},
+    "base_graph_hash": {"$ref": "external-proposal.v1.schema.json#/$defs/sha256"},
+    "provenance": {"$ref": "external-proposal.v1.schema.json#/$defs/provenance"},
+    "deltas": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000000000,
+      "uniqueItems": true,
+      "items": {"$ref": "external-proposal.v1.schema.json#/$defs/delta"}
+    },
+    "effective_budget": {"$ref": "#/$defs/budget"},
+    "allowed_operations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {"enum": ["add", "delete", "merge", "split", "replace", "reorder"]}
+    },
+    "policy_hash": {"$ref": "external-proposal.v1.schema.json#/$defs/sha256"}
+  },
+  "$defs": {
+    "positive_budget": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000000
+    },
+    "nonnegative_budget": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_payload_bytes", "max_deltas", "max_dependencies", "max_conflicts", "max_dependency_depth", "max_modules_added", "max_modules_removed", "max_edges_added", "max_edges_removed", "max_touched_objects", "max_result_modules", "max_result_edges", "max_analysis_steps"],
+      "properties": {
+        "max_payload_bytes": {"$ref": "#/$defs/positive_budget"},
+        "max_deltas": {"$ref": "#/$defs/positive_budget"},
+        "max_dependencies": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_conflicts": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_dependency_depth": {"$ref": "#/$defs/positive_budget"},
+        "max_modules_added": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_modules_removed": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_edges_added": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_edges_removed": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_touched_objects": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_result_modules": {"$ref": "#/$defs/positive_budget"},
+        "max_result_edges": {"$ref": "#/$defs/nonnegative_budget"},
+        "max_analysis_steps": {"$ref": "#/$defs/positive_budget"}
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+schema: mycevo.plugin_catalog.v1
+plugins:
+  - id: paperframes-reference
+    status: implemented
+    milestone: M1
+    role: docling-ir-typst-golden-path
+  - id: paperframes.grobid
+    status: planned
+    milestone: M4
+    role: pdf-structure-parser
+  - id: paperframes.matplotlib
+    status: planned
+    milestone: M2
+    role: 2d-figure-renderer
+  - id: paperframes.pyvista
+    status: planned
+    milestone: M3
+    role: 3d-figure-renderer
+  - id: paperframes.paraview
+    status: planned
+    milestone: M3
+    role: engineering-postprocessor
+  - id: paperframes.freecad
+    status: planned
+    milestone: M3
+    role: apparatus-cad-renderer
+  - id: paperframes.latex
+    status: planned
+    milestone: M4
+    role: manuscript-renderer
+  - id: paperframes.bibliography
+    status: planned
+    milestone: M4
+    role: citation-audit-adapter

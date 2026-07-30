@@ -1,0 +1,86 @@
+schema: mycevo.public_file_manifest.v1
+release_identity: paperframes-v0.2.0-rc.1
+default_deny: true
+
+allow:
+  exact:
+    - README.md
+    - README.zh-CN.md
+    - LICENSE
+    - NOTICE
+    - DESIGN.md
+    - pyproject.toml
+    - LICENSE.CANDIDATE.md
+    - COMMERCIAL-LICENSE.md
+    - LICENSING_FAQ.md
+    - TRADEMARKS.md
+    - SECURITY.md
+    - CONTRIBUTING.md
+    - CONTRIBUTOR_LICENSE_AGREEMENT.CANDIDATE.md
+    - THIRD_PARTY_NOTICES.md
+    - CHANGELOG.md
+    - .gitignore
+    - scripts/_harness_common.py
+    - scripts/closeout_check.py
+    - scripts/evaluator.py
+    - scripts/public_release.py
+    - scripts/registry_tool.py
+    - scripts/self_evolution_loop.py
+  prefixes:
+    - .github/
+    - assets/readme/mycevo-
+    - docs/architecture/
+    - docs/getting-started/
+    - docs/integrations/
+    - docs/product/
+    - docs/release/
+    - docs/releases/
+    - examples/cross-agent-handoff/
+    - mcp/mycevo_mcp.py
+    - plugins/
+    - shortcraft/
+    - schemas/
+    - src/mycevo/
+    - src/researchloop/
+    - src/resevo/
+    - tests/
+
+ignore:
+  path_markers:
+    - /.git/
+    - /.omx/
+    - .egg-info/
+    - __pycache__/
+    - .pytest_cache/
+deny:
+  filename_markers:
+    - 冲突文件
+    - conflicted copy
+  extensions:
+    - .env
+    - .db
+    - .sqlite
+    - .pdf
+    - .pptx
+    - .npy
+    - .npz
+    - .pt
+    - .pth
+    - .ckpt
+    - .onnx
+    - .zip
+  content_markers:
+    - G:/
+    - "G:\\"
+    - G:/BaiduSyncdisk/ResearchLoop
+    - G:\\BaiduSyncdisk\\ResearchLoop
+    - G:/knowledge
+    - G:\\knowledge
+
+required_gates:
+  - G0_manifest_and_hashes
+  - G1_owner_legal_rights_and_contribution_approval
+  - G2_truthful_release_contract_name
+  - G3_zero_tests_and_no_private_side_effects
+  - G4_publication_scans_and_clean_install
+  - G5_new_mycevo_remote_and_owner_visibility_approval

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 from datetime import datetime
@@ -104,19 +104,6 @@ REQUIRED_FIELDS = {
         "updated_at",
     ],
     "decisions": ["id", "date", "project_id", "decision", "changed_route_or_assumption", "path", "status"],
-    "upstream_workflows": [
-        "id",
-        "title",
-        "upstream_url",
-        "license",
-        "pinned_ref",
-        "local_path",
-        "integration_status",
-        "validation_status",
-        "starter_use",
-        "safety_notes",
-        "updated_at",
-    ],
     "visual_to_editable_skills": [
         "id",
         "title",
@@ -325,11 +312,16 @@ def scan_assets() -> dict[str, Any]:
     data = load_registry("research_assets")
     registered = {str(item.get("asset_dir")) for item in data.get("research_assets", [])}
     project_data = load_registry("projects")
-    project_paths = [
-        Path(str(item["path"]))
-        for item in project_data.get("projects", [])
-        if item.get("path") and str(item["path"]).lower().startswith(str(PROJECTS_ROOT).lower())
-    ]
+    project_paths: list[Path] = []
+    for item in project_data.get("projects", []):
+        if not item.get("path"):
+            continue
+        candidate = Path(str(item["path"]))
+        try:
+            candidate.resolve().relative_to(PROJECTS_ROOT.resolve())
+        except (OSError, ValueError):
+            continue
+        project_paths.append(candidate)
     asset_dirs: list[Path] = []
     for project_path in project_paths:
         root = project_path / "research_assets"

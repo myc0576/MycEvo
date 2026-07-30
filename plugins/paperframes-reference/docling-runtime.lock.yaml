@@ -1,0 +1,15 @@
+schema: paperframes.docling_runtime_lock.v1
+runtime: docling
+docling_version: 2.116.0
+python:
+  supported: ["3.11", "3.12"]
+  preferred: "3.12"
+manager: uv
+home_env: PAPERFRAMES_HOME
+python_env: PAPERFRAMES_DOCLING_PYTHON
+artifacts_env: PAPERFRAMES_DOCLING_ARTIFACTS
+ocr:
+  enabled_for_golden_text_pdf: false
+network:
+  runtime_execution: false
+  installation: explicit_user_authorized_only

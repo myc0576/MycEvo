@@ -1,0 +1,11 @@
+schema: mycevo.workflow_candidate.v1
+candidate_id: manifest-built-release-staging
+status: pending validation
+proposed_method:
+  - Snapshot source HEAD and dirty status.
+  - Select files through a default-deny manifest.
+  - Hash and scan every selected file.
+  - Copy selected files into an isolated sibling staging directory.
+evidence_refs:
+  - docs/release/public-file-manifest.yaml
+promotion_allowed: false

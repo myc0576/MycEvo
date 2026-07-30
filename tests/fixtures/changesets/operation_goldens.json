@@ -1,0 +1,50 @@
+{
+  "schema": "mycevo.changeset_operation_goldens.v1",
+  "base_graph_file": "base_graph.json",
+  "base_graph_hash": "dfa35ad0a8855f4c512be8fdd91c4036b6a49281a9e6b339cf5cf1c0c935bb94",
+  "cases": [
+    {
+      "operation": "add",
+      "expected_selection_hash": "616771ffe516e9fd01402aa65625b4eefba09634e927b083f20b27024109b18e",
+      "expected_candidate_graph_hash": "171b10f954bac9bf490cb8965d4eb93833cbc1739e4582e1ae278439c8886714",
+      "expected_module_ids": ["alpha", "beta", "gamma", "input", "review", "sink"],
+      "expected_edge_ids": ["alpha_beta", "beta_review", "gamma_sink", "input_alpha", "review_gamma"]
+    },
+    {
+      "operation": "delete",
+      "expected_selection_hash": "e382bc06c9996b9c534c8a8ab4fc3f09858dd3eda1b3559285b16c4b5c4dc721",
+      "expected_candidate_graph_hash": "99f75fbbf74ae0ac44268afce2e030d4a8e1cccd4b884f339783638e2fb4a461",
+      "expected_module_ids": ["alpha", "gamma", "input", "sink"],
+      "expected_edge_ids": ["alpha_gamma", "gamma_sink", "input_alpha"]
+    },
+    {
+      "operation": "merge",
+      "expected_selection_hash": "03e8b2862957592086944f09d8ed9ef5006206a99db748cb838055e54bf4be17",
+      "expected_candidate_graph_hash": "55d101ed7b9d2ea2dc0a26780471be3825e77bc66e7284c3336f17764b454456",
+      "expected_module_ids": ["alpha_beta_merged", "gamma", "input", "sink"],
+      "expected_edge_ids": ["gamma_sink", "input_merged", "merged_gamma"]
+    },
+    {
+      "operation": "split",
+      "expected_selection_hash": "f9f1daf59537cea69ee4917840a39846b3bbb9ab8674dd4ab1916756498689a2",
+      "expected_candidate_graph_hash": "abb120bb736ef0a3f16f21d480ed682a3f4ca620965f0c85d506dc1ef98dc746",
+      "expected_module_ids": ["alpha", "beta_apply", "beta_prepare", "gamma", "input", "sink"],
+      "expected_edge_ids": ["alpha_beta_prepare", "beta_apply_gamma", "beta_prepare_apply", "gamma_sink", "input_alpha"]
+    },
+    {
+      "operation": "replace",
+      "expected_selection_hash": "0f4eae1efe4655cb7ad3aafe18afd52a36b4c0ad6dbf4b2621d8e3c7505bb271",
+      "expected_candidate_graph_hash": "fa6fe2b16bed3faa360b8da200addd054e2b87357eb16339ec083a3758a6c4b7",
+      "expected_module_ids": ["alpha", "beta", "gamma", "input", "sink"],
+      "expected_edge_ids": ["alpha_beta", "beta_gamma", "gamma_sink", "input_alpha"],
+      "expected_module_versions": {"beta": "beta.v2"}
+    },
+    {
+      "operation": "reorder",
+      "expected_selection_hash": "429d2814ea3f40269f2546ce177b8ee553b5cd2e434c48a287fc733f255f5882",
+      "expected_candidate_graph_hash": "7dd1dadc9056de8bce578679130dbf9818429d81ad04986a893d60c3a14c3e16",
+      "expected_module_ids": ["alpha", "beta", "gamma", "input", "sink"],
+      "expected_edge_ids": ["alpha_gamma", "beta_sink", "gamma_beta", "input_alpha"]
+    }
+  ]
+}

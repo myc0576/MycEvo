@@ -1,0 +1,17 @@
+{
+  "schema": "mycevo.release-migration.v1",
+  "source_workspace": "protected local workspace (not a release remote)",
+  "target_repository": "myc0576/MycEvo",
+  "release_version": "0.2.0rc1",
+  "release_tag": "v0.2.0-rc.1",
+  "entries": [
+    {"source_path":"src/mycevo/**","destination_path":"src/mycevo/**","classification":"public_code","migration_action":"copy","reason":"Core public API and PaperFrames governance runtime","license_status":"Apache-2.0","contains_generated_data":false,"contains_absolute_paths":false,"contains_personal_data":false},
+    {"source_path":"plugins/**","destination_path":"plugins/**","classification":"public_code","migration_action":"copy","reason":"Plugin manifests, reference runtime and contract skeletons","license_status":"Apache-2.0 subject to third-party runtime licenses","contains_generated_data":false,"contains_absolute_paths":false,"contains_personal_data":false},
+    {"source_path":"tests/**","destination_path":"tests/**","classification":"public_test","migration_action":"copy","reason":"Public tests and synthetic fixtures only","license_status":"Apache-2.0","contains_generated_data":false,"contains_absolute_paths":false,"contains_personal_data":false},
+    {"source_path":"docs/**","destination_path":"docs/**","classification":"public_docs","migration_action":"copy","reason":"Public architecture and release documentation","license_status":"Apache-2.0","contains_generated_data":false,"contains_absolute_paths":false,"contains_personal_data":false},
+    {"source_path":"shortcraft/**","destination_path":"shortcraft/**","classification":"public_code","migration_action":"copy","reason":"Candidate-first Shortcraft schema and synthetic card","license_status":"Apache-2.0","contains_generated_data":false,"contains_absolute_paths":false,"contains_personal_data":false},
+    {"source_path":".omx/**","destination_path":"","classification":"private","migration_action":"skip","reason":"Agent planning and execution state","license_status":"excluded","contains_generated_data":true,"contains_absolute_paths":true,"contains_personal_data":false},
+    {"source_path":"ResearchLoop private roots","destination_path":"","classification":"private","migration_action":"skip","reason":"Private workspace and memory boundary","license_status":"excluded","contains_generated_data":false,"contains_absolute_paths":true,"contains_personal_data":true},
+    {"source_path":"PDFs, caches, logs, credentials and local environments","destination_path":"","classification":"excluded","migration_action":"skip","reason":"Never publish","license_status":"excluded","contains_generated_data":true,"contains_absolute_paths":true,"contains_personal_data":true}
+  ]
+}

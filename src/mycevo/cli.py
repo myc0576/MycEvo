@@ -50,7 +50,7 @@ LEGACY_COMMANDS = {
 
 app = typer.Typer(
     name="mycevo",
-    help="Evidence-Governed Self-Evolving Research Workflow Harness.",
+    help="Local external workflow brain and governance layer across Agents.",
     rich_markup_mode="markdown",
     no_args_is_help=True,
 )
@@ -116,6 +116,7 @@ for _name, _help in {
     "provenance": "Record append-only run provenance.",
     "mcp": "Serve, test, install, inspect, or uninstall stdio MCP.",
     "migrate": "Preview or apply a safe Resevo metadata migration.",
+    "plugin": "Inspect and plan external plugins; execution is never implicit.",
 }.items():
     _register_passthrough(_name, _help)
 
@@ -141,13 +142,14 @@ def print_result(data: dict[str, object], as_json: bool) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="mycevo",
-        description="MycEvo: Evidence-Governed Self-Evolving Research Workflow Harness.",
+        description="MycEvo: local external workflow brain and governance layer across Agents.",
     )
+    parser.add_argument("--version", action="version", version=__import__("mycevo").__version__)
     parser.add_argument("--root", "--workspace-root", dest="workspace_root", default=os.environ.get("MYCEVO_WORKSPACE_ROOT") or os.environ.get("MYCEVO_ROOT"))
     parser.add_argument("--engine-root", default=os.environ.get("MYCEVO_ENGINE_ROOT"))
     parser.add_argument(
         "command",
-        choices=sorted({"init", "demo", "doctor", "status", "workspace", "recall", "intake", "closeout", "evaluate", "evolve", "mcp", "migrate", "provenance", *LEGACY_COMMANDS}),
+        choices=sorted({"init", "demo", "doctor", "status", "workspace", "recall", "intake", "closeout", "evaluate", "evolve", "mcp", "migrate", "provenance", "plugin", *LEGACY_COMMANDS}),
     )
     parser.add_argument("args", nargs=argparse.REMAINDER)
     return parser
@@ -290,8 +292,9 @@ def dispatch(command: str, args: list[str], paths) -> int:
         parser.add_argument("target", choices=["resevo"])
         parser.add_argument("--apply", action="store_true")
         ns = parser.parse_args(args)
-        print_json(migration_plan(paths, ns.apply))
-        return 0
+        result = migration_plan(paths, ns.apply)
+        print_json(result)
+        return 0 if result.get("ok") else 1
     if command == "provenance":
         parser = _subparser("Record append-only run provenance")
         parser.add_argument("--label", default="mycevo-run")
@@ -300,6 +303,23 @@ def dispatch(command: str, args: list[str], paths) -> int:
         parser.add_argument("--output", action="append", default=[])
         ns = parser.parse_args(args)
         print_json(record_provenance(paths, ns.label, ns.command, ns.input, ns.output))
+        return 0
+    if command == "plugin":
+        parser = _subparser("Inspect or plan an external plugin without executing it")
+        parser.add_argument("action", choices=["inspect", "plan", "run"])
+        parser.add_argument("plugin_id")
+        parser.add_argument("--workspace", default=str(paths.workspace))
+        parser.add_argument("--input", action="append", default=[])
+        parser.add_argument("--execute", action="store_true")
+        ns = parser.parse_args(args)
+        if ns.execute:
+            print_json({"ok": False, "status": "authorization_required", "reason": "execution authorization is not implemented in this story"})
+            return 2
+        from .plugin_boundary import inspect_entry_points
+        if ns.action == "inspect":
+            print_json({"ok": True, "status": "plan_only", "plugins": inspect_entry_points(), "plugin_id": ns.plugin_id})
+        else:
+            print_json({"ok": True, "status": "planned", "plan_only": True, "plugin_id": ns.plugin_id, "workspace": str(Path(ns.workspace).resolve()), "inputs": ns.input, "execute": False})
         return 0
     if command in LEGACY_COMMANDS:
         aliases = {

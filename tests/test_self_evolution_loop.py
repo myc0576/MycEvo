@@ -36,7 +36,6 @@ def isolated_harness(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         "asset_evolution",
         "workflow_improvement_backlog",
         "decisions",
-        "upstream_workflows",
         "ppt_assets",
         "model_assets",
         "feedback",

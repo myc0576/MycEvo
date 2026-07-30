@@ -14,6 +14,7 @@ from mycevo.core import Paths
 from mycevo.retrieval import rank_results
 from mycevo.evolution import evaluate_guard
 from mycevo.provenance import record_run
+from mycevo.plugin_boundary import inspect_entry_points
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -81,6 +82,38 @@ def seed_instance(root: Path) -> Path:
         encoding="utf-8",
     )
     return project
+
+
+def test_core_plugin_inspection_does_not_load_implementation(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeEntryPoint:
+        name = "paperframes-reference"
+        value = "paperframes_reference:plugin"
+
+        def load(self):  # pragma: no cover - a failure proves the boundary was crossed
+            raise AssertionError("Core must not load plugin implementations")
+
+    monkeypatch.setattr("mycevo.plugin_boundary.entry_points", lambda: {"mycevo.plugins": [FakeEntryPoint()]})
+    discovered = inspect_entry_points()
+    assert discovered == [{
+        "name": "paperframes-reference",
+        "value": "paperframes_reference:plugin",
+        "group": "mycevo.plugins",
+        "implementation_loaded": "false",
+    }]
+
+
+def test_plugin_cli_is_plan_only_by_default(tmp_path: Path) -> None:
+    result = run_cli(tmp_path / "instance", "plugin", "run", "paperframes-reference", "--input", "paper.pdf")
+    assert result.returncode == 0, result.stderr + result.stdout
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "planned"
+    assert payload["execute"] is False
+
+
+def test_plugin_cli_rejects_execute_before_authorization(tmp_path: Path) -> None:
+    result = run_cli(tmp_path / "instance", "plugin", "run", "paperframes-reference", "--execute")
+    assert result.returncode == 2
+    assert json.loads(result.stdout)["status"] == "authorization_required"
 
 
 def run_cli(instance: Path, *args: str) -> subprocess.CompletedProcess[str]:
@@ -407,7 +440,7 @@ def test_migrate_resevo_previews_then_backs_up_without_deleting(tmp_path: Path) 
     instance = tmp_path / "workspace"
     legacy = instance / ".resevo"
     legacy.mkdir(parents=True)
-    (legacy / "config.yaml").write_text("product: Resevo\n", encoding="utf-8")
+    (legacy / "config.yaml").write_text("product: Resevo\nversion: 1\n", encoding="utf-8")
     preview = run_cli(instance, "migrate", "resevo")
     assert preview.returncode == 0, preview.stderr + preview.stdout
     assert legacy.exists()

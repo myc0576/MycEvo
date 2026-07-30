@@ -1,120 +1,139 @@
 # MycEvo
 
-[![Python 3.10-3.12](https://img.shields.io/badge/python-3.10--3.12-3776AB)](pyproject.toml)
-[![CI](https://github.com/myc0576/MycEvo/actions/workflows/ci.yml/badge.svg)](https://github.com/myc0576/MycEvo/actions/workflows/ci.yml)
-![CLI](https://img.shields.io/badge/interface-CLI-223344)
-![MCP](https://img.shields.io/badge/integration-stdio_MCP-138A72)
-![Local first](https://img.shields.io/badge/data-local--first-0F766E)
-![No embedded LLM](https://img.shields.io/badge/LLM-not_embedded-B45309)
+**A local external workflow brain for people who work across Codex, Claude Code, Cursor, and other Agents.**
 
-**Evidence-Governed Self-Evolving Research Workflow Harness**
+[简体中文](README.zh-CN.md)
 
-Turn every research task into evidence, and every validated lesson into a better workflow.
+> Release status: **PaperFrames v0.2.0-rc.1**. This Source-Available Technical Preview release candidate is distributed under Apache-2.0. See [Licensing](#licensing).
 
-> **MycEvo does not do research for you. It makes your research workflow improve with use.**
+Agents can finish a task and still lose the method behind it: why a decision was made, which evidence mattered, what failed, which constraints are non-negotiable, and what the next Agent must verify. MycEvo turns those task outcomes into a local, reviewable workflow memory.
 
-[中文 README](README.zh-CN.md)
+It is not another chat UI or Agent runtime. It sits above execution tools and manages:
 
-## Install
+- candidate workflow improvements;
+- evidence, diffs, decisions, and provenance;
+- human-controlled promotion;
+- reusable handoff context across Agents;
+- local workspace state that remains inspectable and portable.
 
-```bash
-git clone https://github.com/myc0576/MycEvo.git
-cd MycEvo
-python -m pip install -e .
-```
-
-Wheel, pipx, and Git installs are also supported:
-
-```bash
-python -m build
-python -m pip install dist/*.whl
-pipx install .
-python -m pip install git+https://github.com/myc0576/MycEvo.git
-```
-
-## 60-second quick start
-
-Run these commands inside a new or existing research workspace:
-
-```bash
-mycevo init
-mycevo demo
-mycevo doctor
-mycevo mcp install codex --workspace . --dry-run
-# or: mycevo mcp install claude --workspace . --dry-run
-```
-
-`mycevo init` creates `.mycevo/`, registries, templates, a sanitized demo paper, and controlled agent guidance. `mycevo demo` runs a deterministic local loop:
+## Why MycEvo
 
 ```text
-task -> intake -> candidate writeback -> validation -> closeout -> recall
+Agent A executes work
+  -> captures evidence and a proposed method change
+  -> MycEvo stores a candidate
+  -> a human reviews the evidence
+  -> a future Agent recalls the accepted context
 ```
 
-Automatic writeback stops at `candidate` or `pending validation`. Human or evidence gates control `validated`, `reusable`, `approved`, and `paper_ready` states.
+MycEvo is intentionally model-agnostic. It does not bundle an LLM and the deterministic demo does not require another model API key.
 
-Use `--json` for stable machine output. The deprecated `resevo` and `researchloop` commands forward to `mycevo` with a migration warning.
+## What ships in this Technical Preview
 
-## CLI and MCP
-
-```bash
-mycevo status
-mycevo recall --query "validated figure workflow" --project-root .
-mycevo closeout
-mycevo mcp self-test
-mycevo mcp install codex --workspace .
-mycevo mcp status codex
-```
-
-MycEvo uses each agent's official `mcp add/get/remove` command. The stdio launch is bound to explicit `MYCEVO_ENGINE_ROOT` and `MYCEVO_ROOT` values. It does not edit guessed config formats, store keys, embed an LLM, or require another model API.
-
-## Product architecture
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/mycevo-product-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/readme/mycevo-product-light.svg">
-  <img alt="Bilingual diagram showing how MycEvo evolves a research workflow through evidence, candidate memory, validation, reuse, and feedback" src="assets/readme/mycevo-product-light.svg">
-</picture>
-
-## Technical architecture
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/mycevo-technical-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/readme/mycevo-technical-light.svg">
-  <img alt="Bilingual diagram of the MycEvo public engine, private research workspace, evidence gate, and sanitized public improvement architecture" src="assets/readme/mycevo-technical-light.svg">
-</picture>
-
-The public engine is a versioned dependency of a private research workspace. Real-world private use can produce a sanitized candidate, but public improvement still requires validation and review.
-
-## Boundaries
-
-| Project | Main object | MycEvo boundary |
+| Capability | Entry point | Status |
 |---|---|---|
-| OpenWiki | What a project knows | MycEvo governs how future research tasks should be performed |
-| SimpleMem / MemRL / EvolveMem | General memory and retrieval | MycEvo evolves claim-evidence-artifact workflows |
-| Open Science Desktop | Automated research application | MycEvo is an external governance and memory layer |
-| Nature Skills | Research-agent starter skills | MycEvo may reference workflows but does not embed an agent |
+| Portable local workspace | `mycevo init` | Shipped and tested |
+| Deterministic candidate-first loop | `mycevo demo` | Shipped and tested |
+| Installation/workspace diagnostics | `mycevo doctor`, `mycevo status` | Shipped and tested |
+| Workspace registration | `mycevo workspace` | Shipped and tested |
+| Recall, intake, closeout, evaluation | legacy source-checkout services | Compatibility only; not part of the wheel contract |
+| Append-only provenance | `mycevo provenance` | Shipped and tested |
+| Codex and Claude Code MCP configuration | `mycevo mcp install ... --dry-run` | Shipped and tested as dry-run configuration |
+| Human decision and canonical promotion | — | Not yet a standalone public contract |
+| Complete handoff, rollback, import, export, delete lifecycle | — | Roadmap; not claimed as shipped |
+| Team collaboration, RBAC, sync, shared canonical state | — | Future Team product; not in this repository |
 
-See [reference-project boundaries](docs/architecture/reference-projects.md) and the [target architecture](docs/architecture/target-architecture.md).
+The normative status table is [the release contract](docs/release/community-release-contract.md). MycEvo will use the **Community** label only after every required single-user lifecycle row is shipped and tested.
 
-## Status and roadmap
+## Five-minute local demo
 
-| Capability | Status |
-|---|---|
-| Portable init and deterministic demo | Supported |
-| Typer/Rich CLI and JSON output | Supported for product commands |
-| Codex/Claude stdio MCP | Supported |
-| Candidate-first writeback and provenance | Supported |
-| Legacy script migration into package services | In progress, module by module |
-| Automatic promotion | Intentionally unsupported |
+Requirements: Python 3.10 or newer.
 
-## Naming and compatibility
+```powershell
+python -m pip install -e .
 
-`MYC` is the project author's abbreviation; `Evo` means evolution. The visual language uses growing knowledge networks and accumulating evidence. MycEvo has no claimed technical relationship to fungi, biology, or the MYC gene.
+$workspace = Join-Path $env:TEMP "mycevo-demo"
+$env:MYCEVO_USER_ROOT = Join-Path $env:TEMP "mycevo-demo-user"
+mycevo --root $workspace init --json
+mycevo --root $workspace demo --json
+mycevo --root $workspace doctor --json
+```
 
-New configuration uses `MYCEVO_*` and `.mycevo/`. Old `RESEVO_*` and `RESEARCHLOOP_*` variables remain readable, with priority `MYCEVO_* > RESEVO_* > RESEARCHLOOP_*`.
+The demo writes a `pending validation` candidate and explicitly reports `promotion_performed: false`.
 
-Preview a metadata migration with `mycevo migrate resevo`; apply it with `mycevo migrate resevo --apply`. The migration backs up `.resevo/`, copies missing metadata into `.mycevo/`, and does not rewrite historical trace, ledger, schema IDs, or research assets.
+Try the Agent configuration dry-runs:
 
-## License
+```powershell
+mycevo --root $workspace mcp install codex --dry-run
+mycevo --root $workspace mcp install claude --dry-run
+```
 
-See [LICENSE](LICENSE).
+See [the complete demo](docs/getting-started/five-minute-demo.md) and [cross-Agent example](examples/cross-agent-handoff/README.md).
+
+## Product boundary
+
+The public single-user product owns local workflow capture, candidates, evidence, provenance, human authority, portable formats, CLI/MCP surfaces, public packs, and security fixes.
+
+Future paid Team value starts where collaboration complexity starts: members, roles, shared canonical state, review queues, multi-person approvals, synchronization, conflict handling, team audit, and administration.
+
+MycEvo does not plan to paywall user-data export/deletion, single-user provenance, human promotion authority, security fixes, or compatibility with published formats. See [Community and Team boundary](docs/product/community-team-boundary.md).
+
+## Architecture
+
+MycEvo is local-first and Agent-agnostic:
+
+```mermaid
+flowchart LR
+  A["Codex / Claude Code / Cursor"] --> B["CLI or stdio MCP"]
+  B --> C["MycEvo public engine"]
+  C --> D["Local workspace"]
+  D --> E["Candidate + evidence + provenance"]
+  E --> F["Human decision"]
+```
+
+A private ResearchLoop instance may depend on a version-locked MycEvo engine. The public engine must never import private registries, prompts, run data, or absolute local paths. See [target architecture](docs/architecture/target-architecture.md).
+
+## Relationship to other tools
+
+- Agent runtimes execute tasks; MycEvo preserves and governs reusable methods.
+- Dify, n8n, and Flowise compose applications or automations; MycEvo records why a workflow should change and whether evidence supports that change.
+- Langfuse and LangSmith trace model/application runs; MycEvo also governs non-LLM artifacts, decisions, workflow candidates, and cross-Agent handoff.
+- ResearchLoop is the research-oriented origin and compatibility pack, not the public product name.
+
+## Capture levels
+
+- **L0 portable:** file and command protocol usable by any Agent.
+- **L1 verified adapter:** tested configuration or MCP integration.
+- **L2 native capture:** richer tool-specific event capture; roadmap unless explicitly proven.
+
+Documentation must not describe an L0/L1 path as full native capture.
+
+## Development
+
+```powershell
+python -m pip install -e .
+$env:PYTEST_DISABLE_PLUGIN_AUTOLOAD='1'
+python -m pytest -q
+```
+
+The current verified local baseline is 50 passing tests on Windows. GitHub Actions defines Windows/Ubuntu, Python 3.10–3.12, editable/wheel coverage.
+
+## Licensing
+
+The intended model is **source-available**, not OSI open source.
+
+MycEvo is licensed under [Apache-2.0](LICENSE). Third-party dependencies and assets retain their original licenses; see [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md).
+
+No pricing is defined in this repository. See:
+
+- [Licensing FAQ](LICENSING_FAQ.md)
+- [Commercial licensing guide](COMMERCIAL-LICENSE.md)
+- [License provenance and approval gate](docs/release/license-provenance.md)
+
+## Contributing
+
+Issues, design feedback, reproducibility reports, adapter proposals, and non-substantive documentation corrections are welcome during the preview. Substantive code contributions remain blocked until the contributor-license process is approved. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Security and privacy
+
+Do not submit private prompts, task traces, credentials, unpublished research, raw data, databases, or absolute user paths. See [SECURITY.md](SECURITY.md) and the [public file manifest](docs/release/public-file-manifest.yaml).

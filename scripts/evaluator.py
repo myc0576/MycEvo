@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 from pathlib import Path
@@ -71,19 +71,6 @@ def required_fields_for(name: str) -> list[str]:
         "asset_evolution": ["asset_id", "asset_type", "title", "source_output_objects", "status", "reproduction_entry", "linked_files"],
         "workflow_improvement_backlog": ["issue_id", "source_project", "pain_point", "affected_workflow", "proposed_fix", "priority", "status"],
         "decisions": ["id", "date", "project_id", "decision", "path", "status"],
-        "upstream_workflows": [
-            "id",
-            "title",
-            "upstream_url",
-            "license",
-            "pinned_ref",
-            "local_path",
-            "integration_status",
-            "validation_status",
-            "starter_use",
-            "safety_notes",
-            "updated_at",
-        ],
         "visual_to_editable_skills": ["id", "title", "upstream_url", "route_tags", "output_types", "status", "validation_method", "safety_notes"],
         "projects": ["project_id", "name", "path", "closeout_required"],
         "ppt_assets": ["id", "project_id", "path", "version", "status"],
