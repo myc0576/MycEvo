@@ -8,11 +8,11 @@ owner-authorized migration into the clean MycEvo release clone.
 
 | Gate | Status | Evidence | Remaining requirement |
 | --- | --- | --- | --- |
-| G0 manifest and hashes | Pending final run | `docs/release/public-file-manifest.yaml` | Regenerate immediately before the release commit. |
+| G0 manifest and hashes | Approved for this RC | `docs/release/public-file-manifest.yaml`; audit selected 218, blocked 0 | None for this RC. |
 | G1 owner, legal, rights and contribution approval | Approved for this RC | `docs/release/owner-authorization.md`; `LICENSE`; `NOTICE`; `docs/release/migration-review.md` | Scoped to the audited public tree; third-party assets retain original licenses. |
 | G2 truthful release contract name | Pass for RC | `docs/releases/v0.2.0-rc.1.md` | Community label remains out of scope. |
-| G3 tests and private-state isolation | Pending final run | clean clone and default-deny staging | Re-run after release-scope changes. |
-| G4 publication scans and clean install | Pending final run | clean clone | Complete secret, package, install and Golden Path checks. |
+| G3 tests and private-state isolation | Approved for this RC | 454 passed, 2 skipped on Windows golden path; hosted CI passed; source workspace unchanged | None for this RC. |
+| G4 publication scans and clean install | Approved for this RC | Gitleaks 8.30.1 clean; wheel/sdist built and twine-checked; Golden Path passed | None for this RC. |
 | G5 remote and visibility approval | Approved for this RC | clean clone origin `https://github.com/myc0576/MycEvo.git`; target is public | Push only the clean release clone; never change the protected source origin. |
 
 ## Publication rule
