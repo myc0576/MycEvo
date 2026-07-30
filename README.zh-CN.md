@@ -1,7 +1,5 @@
 # MycEvo
 
-![MycEvo 工作流总览](assets/readme/researchloop-overview.svg)
-
 ![MycEvo 系统流程图](assets/readme/resevo-technical-architecture.svg)
 
 **为跨 Codex、Claude Code、Cursor 等 Agent 工作的人提供本地“外置工作流大脑”。**

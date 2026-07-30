@@ -2,8 +2,6 @@
 
 **A local external workflow brain for people who work across Codex, Claude Code, Cursor, and other Agents.**
 
-![MycEvo workflow overview](assets/readme/researchloop-overview.svg)
-
 ![MycEvo system flow](assets/readme/resevo-technical-architecture.svg)
 
 [简体中文](README.zh-CN.md)
