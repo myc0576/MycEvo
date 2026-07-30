@@ -1,55 +1,55 @@
-# MycEvo
+﻿# MycEvo
 
-![MycEvo 系统流程图](assets/readme/resevo-technical-architecture.svg)
+![MycEvo 绯荤粺娴佺▼鍥綸(assets/readme/resevo-technical-architecture.svg)
 
-**为跨 Codex、Claude Code、Cursor 等 Agent 工作的人提供本地“外置工作流大脑”。**
+**涓鸿法 Codex銆丆laude Code銆丆ursor 绛?Agent 宸ヤ綔鐨勪汉鎻愪緵鏈湴鈥滃缃伐浣滄祦澶ц剳鈥濄€?*
 
 [English](README.md)
 
-> 发布状态：**PaperFrames v0.2.0-rc.1**。本候选版本采用 Apache-2.0；第三方依赖和素材仍适用其原始许可证。
+> 鍙戝竷鐘舵€侊細**PaperFrames v0.2.0-rc.1**銆傛湰鍊欓€夌増鏈噰鐢?Apache-2.0锛涚涓夋柟渚濊禆鍜岀礌鏉愪粛閫傜敤鍏跺師濮嬭鍙瘉銆?
 
-Agent 可以完成一次任务，却很容易丢失任务背后的方法：为什么这样决策、哪些证据有效、什么尝试失败、哪些约束不能破坏、下一个 Agent 必须复核什么。MycEvo 把这些结果沉淀为本地、可复查、可演进的工作流记忆。
+Agent 鍙互瀹屾垚涓€娆′换鍔★紝鍗村緢瀹规槗涓㈠け浠诲姟鑳屽悗鐨勬柟娉曪細涓轰粈涔堣繖鏍峰喅绛栥€佸摢浜涜瘉鎹湁鏁堛€佷粈涔堝皾璇曞け璐ャ€佸摢浜涚害鏉熶笉鑳界牬鍧忋€佷笅涓€涓?Agent 蹇呴』澶嶆牳浠€涔堛€侻ycEvo 鎶婅繖浜涚粨鏋滄矇娣€涓烘湰鍦般€佸彲澶嶆煡銆佸彲婕旇繘鐨勫伐浣滄祦璁板繂銆?
 
-它不是新的聊天界面，也不是 Agent 执行器。它位于 Codex、Claude Code、Cursor 等执行工具之上，负责管理：
+瀹冧笉鏄柊鐨勮亰澶╃晫闈紝涔熶笉鏄?Agent 鎵ц鍣ㄣ€傚畠浣嶄簬 Codex銆丆laude Code銆丆ursor 绛夋墽琛屽伐鍏蜂箣涓婏紝璐熻矗绠＄悊锛?
 
-- 工作流改进候选；
-- 证据、diff、决策和 provenance；
-- 人工控制的晋升；
-- 跨 Agent 可复用的交接上下文；
-- 可检查、可迁移的本地 workspace 状态。
+- 宸ヤ綔娴佹敼杩涘€欓€夛紱
+- 璇佹嵁銆乨iff銆佸喅绛栧拰 provenance锛?
+- 浜哄伐鎺у埗鐨勬檵鍗囷紱
+- 璺?Agent 鍙鐢ㄧ殑浜ゆ帴涓婁笅鏂囷紱
+- 鍙鏌ャ€佸彲杩佺Щ鐨勬湰鍦?workspace 鐘舵€併€?
 
-## 为什么需要 MycEvo
+## 涓轰粈涔堥渶瑕?MycEvo
 
 ```text
-Agent A 执行任务
-  -> 记录证据和方法改进建议
-  -> MycEvo 写入 candidate
-  -> 人类审查证据
-  -> 后续 Agent 继承已接受的上下文
+Agent A 鎵ц浠诲姟
+  -> 璁板綍璇佹嵁鍜屾柟娉曟敼杩涘缓璁?
+  -> MycEvo 鍐欏叆 candidate
+  -> 浜虹被瀹℃煡璇佹嵁
+  -> 鍚庣画 Agent 缁ф壙宸叉帴鍙楃殑涓婁笅鏂?
 ```
 
-MycEvo 不绑定模型，不内置 LLM；确定性 demo 不要求额外模型 API key。
+MycEvo 涓嶇粦瀹氭ā鍨嬶紝涓嶅唴缃?LLM锛涚‘瀹氭€?demo 涓嶈姹傞澶栨ā鍨?API key銆?
 
-## 当前 Technical Preview 实际提供什么
+## 褰撳墠 Technical Preview 瀹為檯鎻愪緵浠€涔?
 
-| 能力 | 入口 | 状态 |
+| 鑳藉姏 | 鍏ュ彛 | 鐘舵€?|
 |---|---|---|
-| 可移植本地 workspace | `mycevo init` | 已实现并测试 |
-| 确定性 candidate-first loop | `mycevo demo` | 已实现并测试 |
-| 安装与 workspace 诊断 | `mycevo doctor`、`mycevo status` | 已实现并测试 |
-| workspace 登记 | `mycevo workspace` | 已实现并测试 |
-| recall、intake、closeout、evaluation | 旧版 source-checkout 服务 | 仅兼容，不属于 wheel 正式契约 |
-| append-only provenance | `mycevo provenance` | 已实现并测试 |
-| Codex / Claude Code MCP 配置 | `mycevo mcp install ... --dry-run` | 已实现 dry-run 并测试 |
-| 独立的人工决策与 canonical 晋升契约 | — | 尚未作为公开接口完成 |
-| 完整 handoff、rollback、import、export、delete 生命周期 | — | roadmap，不宣称已完成 |
-| 团队协作、RBAC、同步、共享 canonical | — | 未来 Team 产品，不在当前仓库 |
+| 鍙Щ妞嶆湰鍦?workspace | `mycevo init` | 宸插疄鐜板苟娴嬭瘯 |
+| 纭畾鎬?candidate-first loop | `mycevo demo` | 宸插疄鐜板苟娴嬭瘯 |
+| 瀹夎涓?workspace 璇婃柇 | `mycevo doctor`銆乣mycevo status` | 宸插疄鐜板苟娴嬭瘯 |
+| workspace 鐧昏 | `mycevo workspace` | 宸插疄鐜板苟娴嬭瘯 |
+| recall銆乮ntake銆乧loseout銆乪valuation | 鏃х増 source-checkout 鏈嶅姟 | 浠呭吋瀹癸紝涓嶅睘浜?wheel 姝ｅ紡濂戠害 |
+| append-only provenance | `mycevo provenance` | 宸插疄鐜板苟娴嬭瘯 |
+| Codex / Claude Code MCP 閰嶇疆 | `mycevo mcp install ... --dry-run` | 宸插疄鐜?dry-run 骞舵祴璇?|
+| 鐙珛鐨勪汉宸ュ喅绛栦笌 canonical 鏅嬪崌濂戠害 | 鈥?| 灏氭湭浣滀负鍏紑鎺ュ彛瀹屾垚 |
+| 瀹屾暣 handoff銆乺ollback銆乮mport銆乪xport銆乨elete 鐢熷懡鍛ㄦ湡 | 鈥?| roadmap锛屼笉瀹ｇО宸插畬鎴?|
+| 鍥㈤槦鍗忎綔銆丷BAC銆佸悓姝ャ€佸叡浜?canonical | 鈥?| 鏈潵 Team 浜у搧锛屼笉鍦ㄥ綋鍓嶄粨搴?|
 
-规范状态以[发布契约矩阵](docs/release/community-release-contract.md)为准。只有单用户核心循环每一项都达到 `shipped + tested`，MycEvo 才使用 **Community** 名称。
+瑙勮寖鐘舵€佷互[鍙戝竷濂戠害鐭╅樀](docs/release/community-release-contract.md)涓哄噯銆傚彧鏈夊崟鐢ㄦ埛鏍稿績寰幆姣忎竴椤归兘杈惧埌 `shipped + tested`锛孧ycEvo 鎵嶄娇鐢?**Community** 鍚嶇О銆?
 
-## 五分钟本地 Demo
+## 浜斿垎閽熸湰鍦?Demo
 
-需要 Python 3.10 或更高版本。
+闇€瑕?Python 3.10 鎴栨洿楂樼増鏈€?
 
 ```powershell
 python -m pip install -e .
@@ -61,54 +61,52 @@ mycevo --root $workspace demo --json
 mycevo --root $workspace doctor --json
 ```
 
-Demo 会写入一个 `pending validation` candidate，并明确返回 `promotion_performed: false`。
+Demo 浼氬啓鍏ヤ竴涓?`pending validation` candidate锛屽苟鏄庣‘杩斿洖 `promotion_performed: false`銆?
 
-测试 Agent 配置 dry-run：
+娴嬭瘯 Agent 閰嶇疆 dry-run锛?
 
 ```powershell
 mycevo --root $workspace mcp install codex --dry-run
 mycevo --root $workspace mcp install claude --dry-run
 ```
 
-继续阅读[完整 Demo](docs/getting-started/five-minute-demo.md)和[跨 Agent 示例](examples/cross-agent-handoff/README.md)。
+缁х画闃呰[瀹屾暣 Demo](docs/getting-started/five-minute-demo.md)鍜孾璺?Agent 绀轰緥](examples/cross-agent-handoff/README.md)銆?
 
-## Community 与未来收费边界
+## Community 涓庢湭鏉ユ敹璐硅竟鐣?
 
-公开单用户产品负责本地工作流捕获、candidate、证据、provenance、人工权限、可移植格式、CLI/MCP、公共 pack 和安全修复。
+鍏紑鍗曠敤鎴蜂骇鍝佽礋璐ｆ湰鍦板伐浣滄祦鎹曡幏銆乧andidate銆佽瘉鎹€乸rovenance銆佷汉宸ユ潈闄愩€佸彲绉绘鏍煎紡銆丆LI/MCP銆佸叕鍏?pack 鍜屽畨鍏ㄤ慨澶嶃€?
 
-未来 Team 的付费价值从多人协作复杂度开始：成员、角色、共享 canonical、review queue、多人审批、同步、冲突处理、团队审计和管理后台。
+鏈潵 Team 鐨勪粯璐逛环鍊间粠澶氫汉鍗忎綔澶嶆潅搴﹀紑濮嬶細鎴愬憳銆佽鑹层€佸叡浜?canonical銆乺eview queue銆佸浜哄鎵广€佸悓姝ャ€佸啿绐佸鐞嗐€佸洟闃熷璁″拰绠＄悊鍚庡彴銆?
 
-MycEvo 不计划把用户数据导出/删除、单用户 provenance、人工晋升权、安全修复和公开格式兼容做成强制付费墙。详见 [Community / Team 边界](docs/product/community-team-boundary.md)。
+MycEvo 涓嶈鍒掓妸鐢ㄦ埛鏁版嵁瀵煎嚭/鍒犻櫎銆佸崟鐢ㄦ埛 provenance銆佷汉宸ユ檵鍗囨潈銆佸畨鍏ㄤ慨澶嶅拰鍏紑鏍煎紡鍏煎鍋氭垚寮哄埗浠樿垂澧欍€傝瑙?[Community / Team 杈圭晫](docs/product/community-team-boundary.md)銆?
 
-## 架构边界
+## 鏋舵瀯杈圭晫
 
 ```mermaid
 flowchart LR
-  A["Codex / Claude Code / Cursor"] --> B["CLI 或 stdio MCP"]
+  A["Codex / Claude Code / Cursor"] --> B["CLI 鎴?stdio MCP"]
   B --> C["MycEvo public engine"]
-  C --> D["本地 workspace"]
+  C --> D["鏈湴 workspace"]
   D --> E["Candidate + evidence + provenance"]
-  E --> F["人工决策"]
+  E --> F["浜哄伐鍐崇瓥"]
 ```
 
-私有 ResearchLoop instance 可以依赖固定版本的 MycEvo public engine；public engine 不能反向导入私有 registry、prompt、run 数据或绝对本地路径。详见[目标架构](docs/architecture/target-architecture.md)。
 
-## 与相邻工具的区别
+## 涓庣浉閭诲伐鍏风殑鍖哄埆
 
-- Agent runtime 负责执行；MycEvo 负责方法的沉淀、审核和演进。
-- Dify、n8n、Flowise 负责应用或自动化编排；MycEvo 记录为什么要改工作流、证据是否支持修改。
-- Langfuse、LangSmith 偏向模型与应用 trace；MycEvo 还治理非 LLM 资产、决策、候选和跨 Agent 交接。
-- ResearchLoop 是科研方向的起源与兼容 pack，不再是公共产品名。
+- Agent runtime 璐熻矗鎵ц锛汳ycEvo 璐熻矗鏂规硶鐨勬矇娣€銆佸鏍稿拰婕旇繘銆?
+- Dify銆乶8n銆丗lowise 璐熻矗搴旂敤鎴栬嚜鍔ㄥ寲缂栨帓锛汳ycEvo 璁板綍涓轰粈涔堣鏀瑰伐浣滄祦銆佽瘉鎹槸鍚︽敮鎸佷慨鏀广€?
+- Langfuse銆丩angSmith 鍋忓悜妯″瀷涓庡簲鐢?trace锛汳ycEvo 杩樻不鐞嗛潪 LLM 璧勪骇銆佸喅绛栥€佸€欓€夊拰璺?Agent 浜ゆ帴銆?
 
-## 捕获完整度
+## 鎹曡幏瀹屾暣搴?
 
-- **L0 portable：**任何 Agent 都能使用的文件和命令协议。
-- **L1 verified adapter：**通过测试的配置或 MCP 集成。
-- **L2 native capture：**工具原生事件捕获；没有明确证据时只属于 roadmap。
+- **L0 portable锛?*浠讳綍 Agent 閮借兘浣跨敤鐨勬枃浠跺拰鍛戒护鍗忚銆?
+- **L1 verified adapter锛?*閫氳繃娴嬭瘯鐨勯厤缃垨 MCP 闆嗘垚銆?
+- **L2 native capture锛?*宸ュ叿鍘熺敓浜嬩欢鎹曡幏锛涙病鏈夋槑纭瘉鎹椂鍙睘浜?roadmap銆?
 
-不能把 L0/L1 文档路径宣传成完整原生捕获。
+涓嶈兘鎶?L0/L1 鏂囨。璺緞瀹ｄ紶鎴愬畬鏁村師鐢熸崟鑾枫€?
 
-## 开发与验证
+## 寮€鍙戜笌楠岃瘉
 
 ```powershell
 python -m pip install -e .
@@ -116,24 +114,24 @@ $env:PYTEST_DISABLE_PLUGIN_AUTOLOAD='1'
 python -m pytest -q
 ```
 
-当前 Windows 本地验证基线为 50 项测试通过。GitHub Actions 已定义 Windows/Ubuntu、Python 3.10–3.12、editable/wheel 矩阵。
+褰撳墠 Windows 鏈湴楠岃瘉鍩虹嚎涓?50 椤规祴璇曢€氳繃銆侴itHub Actions 宸插畾涔?Windows/Ubuntu銆丳ython 3.10鈥?.12銆乪ditable/wheel 鐭╅樀銆?
 
-## 许可证
+## 璁稿彲璇?
 
-预期模式是 **source-available（源码可见）**，不是 OSI open source。
+棰勬湡妯″紡鏄?**source-available锛堟簮鐮佸彲瑙侊級**锛屼笉鏄?OSI open source銆?
 
-MycEvo 使用 [Apache-2.0](LICENSE) 许可证。第三方依赖和素材仍适用其原始许可证，详见 [NOTICE](NOTICE) 和 [第三方声明](THIRD_PARTY_NOTICES.md)。
+MycEvo 浣跨敤 [Apache-2.0](LICENSE) 璁稿彲璇併€傜涓夋柟渚濊禆鍜岀礌鏉愪粛閫傜敤鍏跺師濮嬭鍙瘉锛岃瑙?[NOTICE](NOTICE) 鍜?[绗笁鏂瑰０鏄嶿(THIRD_PARTY_NOTICES.md)銆?
 
-当前不讨论具体价格。参见：
+褰撳墠涓嶈璁哄叿浣撲环鏍笺€傚弬瑙侊細
 
-- [许可证 FAQ](LICENSING_FAQ.md)
-- [商业授权说明](COMMERCIAL-LICENSE.md)
-- [许可证来源与审批门禁](docs/release/license-provenance.md)
+- [璁稿彲璇?FAQ](LICENSING_FAQ.md)
+- [鍟嗕笟鎺堟潈璇存槑](COMMERCIAL-LICENSE.md)
+- [璁稿彲璇佹潵婧愪笌瀹℃壒闂ㄧ](docs/release/license-provenance.md)
 
-## 贡献
+## 璐＄尞
 
-Technical Preview 阶段欢迎 Issue、设计反馈、复现报告、adapter proposal 和非实质文档修正。贡献者授权流程批准前，不合并实质代码 PR。详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+Technical Preview 闃舵娆㈣繋 Issue銆佽璁″弽棣堛€佸鐜版姤鍛娿€乤dapter proposal 鍜岄潪瀹炶川鏂囨。淇銆傝础鐚€呮巿鏉冩祦绋嬫壒鍑嗗墠锛屼笉鍚堝苟瀹炶川浠ｇ爜 PR銆傝瑙?[CONTRIBUTING.md](CONTRIBUTING.md)銆?
 
-## 安全与隐私
+## 瀹夊叏涓庨殣绉?
 
-不要提交私有 prompt、任务 trace、凭据、未公开研究、原始数据、数据库或用户绝对路径。参见 [SECURITY.md](SECURITY.md) 和[公开文件清单](docs/release/public-file-manifest.yaml)。
+涓嶈鎻愪氦绉佹湁 prompt銆佷换鍔?trace銆佸嚟鎹€佹湭鍏紑鐮旂┒銆佸師濮嬫暟鎹€佹暟鎹簱鎴栫敤鎴风粷瀵硅矾寰勩€傚弬瑙?[SECURITY.md](SECURITY.md) 鍜孾鍏紑鏂囦欢娓呭崟](docs/release/public-file-manifest.yaml)銆?

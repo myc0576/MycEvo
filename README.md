@@ -93,14 +93,11 @@ flowchart LR
   E --> F["Human decision"]
 ```
 
-A private ResearchLoop instance may depend on a version-locked MycEvo engine. The public engine must never import private registries, prompts, run data, or absolute local paths. See [target architecture](docs/architecture/target-architecture.md).
-
 ## Relationship to other tools
 
 - Agent runtimes execute tasks; MycEvo preserves and governs reusable methods.
 - Dify, n8n, and Flowise compose applications or automations; MycEvo records why a workflow should change and whether evidence supports that change.
 - Langfuse and LangSmith trace model/application runs; MycEvo also governs non-LLM artifacts, decisions, workflow candidates, and cross-Agent handoff.
-- ResearchLoop is the research-oriented origin and compatibility pack, not the public product name.
 
 ## Capture levels
 
