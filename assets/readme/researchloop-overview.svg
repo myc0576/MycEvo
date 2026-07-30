@@ -1,0 +1,282 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">ResearchLoop Overview Architecture</title>
+  <desc id="desc">A bilingual overview diagram showing ResearchLoop as a local external brain for research agents, turning paper-driven research tasks into reusable workflow memory.</desc>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAFF"/>
+      <stop offset="0.52" stop-color="#F5FBF8"/>
+      <stop offset="1" stop-color="#FFF9EE"/>
+    </linearGradient>
+    <linearGradient id="coreGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4A8DFF"/>
+      <stop offset="0.52" stop-color="#5DD7B9"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+    <linearGradient id="softBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EDF5FF"/>
+      <stop offset="1" stop-color="#F9FCFF"/>
+    </linearGradient>
+    <linearGradient id="softGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ECFBF3"/>
+      <stop offset="1" stop-color="#F8FFFB"/>
+    </linearGradient>
+    <linearGradient id="softWarm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF7E4"/>
+      <stop offset="1" stop-color="#FFFBF4"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="44%" r="58%">
+      <stop offset="0" stop-color="#6BD9D2" stop-opacity="0.36"/>
+      <stop offset="0.42" stop-color="#79A7FF" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#2F4770" flood-opacity="0.12"/>
+    </filter>
+    <filter id="softShadow" x="-18%" y="-18%" width="136%" height="146%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#2F4770" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M2 2 L10 6 L2 10" fill="none" stroke="#6D7F9F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .font { font-family: Inter, "Noto Sans SC", "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .title { font-size: 50px; font-weight: 760; fill: #152238; letter-spacing: 0; }
+      .subtitle-cn { font-size: 27px; font-weight: 670; fill: #22324D; }
+      .subtitle-en { font-size: 20px; font-weight: 520; fill: #66738B; }
+      .section-cn { font-size: 25px; font-weight: 720; fill: #17253A; }
+      .section-en { font-size: 15px; font-weight: 540; fill: #738097; }
+      .card-cn { font-size: 17px; font-weight: 700; fill: #1D2B43; }
+      .card-en { font-size: 13px; font-weight: 520; fill: #68758B; }
+      .loop-en { font-size: 14px; font-weight: 760; fill: #20304A; }
+      .loop-cn { font-size: 13px; font-weight: 560; fill: #6C778B; }
+      .chip { font-size: 15px; font-weight: 690; fill: #31415C; }
+      .chip-bottom { font-size: 13.4px; font-weight: 660; fill: #31415C; letter-spacing: 0; }
+      .chip-muted { font-size: 13.2px; font-weight: 560; fill: #65738A; }
+      .memory-en { font-size: 15.2px; font-weight: 670; fill: #42526D; }
+      .memory-cn { font-size: 14.2px; font-weight: 680; fill: #4C5D78; }
+      .small { font-size: 13px; font-weight: 560; fill: #66738B; }
+      .govern-title { font-size: 22px; font-weight: 740; fill: #17253A; }
+      .govern-en { font-size: 14px; font-weight: 560; fill: #6E7A90; }
+      .icon { fill: none; stroke: #5274A9; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .icon-green { fill: none; stroke: #2C9B7B; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .icon-warm { fill: none; stroke: #B98524; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgGrad)"/>
+  <circle cx="210" cy="148" r="190" fill="#DCEBFF" opacity="0.42"/>
+  <circle cx="1404" cy="96" r="156" fill="#FFF1C8" opacity="0.46"/>
+  <circle cx="1200" cy="724" r="210" fill="#DFF7EC" opacity="0.42"/>
+
+  <g class="font">
+    <text x="72" y="76" class="title">ResearchLoop</text>
+    <text x="74" y="117" class="subtitle-cn">科研 Agent 的本地外置大脑</text>
+    <text x="74" y="146" class="subtitle-en">Local External Brain for Research Agents</text>
+
+    <g transform="translate(940 52)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="184" height="56" rx="28" fill="#FFFFFF" stroke="#D9E4F2"/>
+      <circle cx="27" cy="28" r="8" fill="#6CCB9A"/>
+      <text x="50" y="25" class="chip">Local-first</text>
+      <text x="50" y="43" class="chip-muted">本地优先</text>
+    </g>
+    <g transform="translate(1144 52)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="198" height="56" rx="28" fill="#FFFFFF" stroke="#D9E4F2"/>
+      <circle cx="27" cy="28" r="8" fill="#7FA7FF"/>
+      <text x="50" y="25" class="chip">No embedded LLM</text>
+      <text x="50" y="43" class="chip-muted">不内置大模型</text>
+    </g>
+    <g transform="translate(1362 52)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="178" height="56" rx="28" fill="#FFFFFF" stroke="#D9E4F2"/>
+      <circle cx="26" cy="28" r="8" fill="#F4B85B"/>
+      <text x="46" y="25" class="chip">Human control</text>
+      <text x="46" y="43" class="chip-muted">人控自进化</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="60" y="177" width="430" height="500" rx="28" fill="#FFFFFF" opacity="0.92" stroke="#DCE7F5"/>
+    <rect x="510" y="177" width="580" height="500" rx="28" fill="#FFFFFF" opacity="0.90" stroke="#DCE7F5"/>
+    <rect x="1110" y="177" width="430" height="500" rx="28" fill="#FFFFFF" opacity="0.92" stroke="#DCE7F5"/>
+  </g>
+
+  <g class="font">
+    <text x="92" y="224" class="section-cn">输入：真实科研材料</text>
+    <text x="92" y="250" class="section-en">Inputs: Real Research Materials</text>
+    <text x="542" y="224" class="section-cn">工作流记忆内核</text>
+    <text x="542" y="250" class="section-en">ResearchLoop Core</text>
+    <text x="1142" y="224" class="section-cn">输出：下一篇论文可继承的资产</text>
+    <text x="1142" y="250" class="section-en">Outputs: Reusable Assets for the Next Paper</text>
+  </g>
+
+  <g class="font" filter="url(#softShadow)">
+    <g transform="translate(92 282)">
+      <rect width="360" height="62" rx="18" fill="url(#softBlue)" stroke="#DCE7F5"/>
+      <path class="icon" d="M24 20h22v24H24z M46 25h8v24H32"/>
+      <text x="76" y="26" class="card-cn">文献与目标论文</text>
+      <text x="76" y="45" class="card-en">Papers &amp; Target Venues</text>
+    </g>
+    <g transform="translate(92 358)">
+      <rect width="360" height="62" rx="18" fill="url(#softGreen)" stroke="#DCE7F5"/>
+      <path class="icon-green" d="M23 22h32v20H34l-9 8v-8h-2z M31 30h16 M31 36h11"/>
+      <text x="76" y="26" class="card-cn">组会反馈与导师意见</text>
+      <text x="76" y="45" class="card-en">Lab Feedback</text>
+    </g>
+    <g transform="translate(92 434)">
+      <rect width="360" height="62" rx="18" fill="url(#softWarm)" stroke="#DCE7F5"/>
+      <path class="icon-warm" d="M24 42l9-11 8 8 6-7 9 10 M24 21h32v26H24z M46 27h.1"/>
+      <text x="76" y="26" class="card-cn">图表参考与截图</text>
+      <text x="76" y="45" class="card-en">Figure References</text>
+    </g>
+    <g transform="translate(92 510)">
+      <rect width="360" height="62" rx="18" fill="url(#softBlue)" stroke="#DCE7F5"/>
+      <path class="icon" d="M24 42c0 5 28 5 28 0V24c0-5-28-5-28 0v18z M24 24c0 5 28 5 28 0 M24 33c0 5 28 5 28 0"/>
+      <text x="76" y="26" class="card-cn">数据、代码与实验结果</text>
+      <text x="76" y="45" class="card-en">Data, Code &amp; Results</text>
+    </g>
+    <g transform="translate(92 586)">
+      <rect width="360" height="62" rx="18" fill="url(#softGreen)" stroke="#DCE7F5"/>
+      <path class="icon-green" d="M40 20l17 8v9c0 11-7 19-17 23-10-4-17-12-17-23v-9z M32 40l6 6 12-15"/>
+      <text x="76" y="26" class="card-cn">审稿意见与失败案例</text>
+      <text x="76" y="45" class="card-en">Reviews &amp; Failed Attempts</text>
+    </g>
+  </g>
+
+  <g>
+    <ellipse cx="800" cy="442" rx="278" ry="218" fill="url(#halo)"/>
+    <path d="M492 430 C525 430 526 430 552 430" fill="none" stroke="#7A8BA8" stroke-width="2.8" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.62"/>
+    <path d="M1048 430 C1080 430 1083 430 1110 430" fill="none" stroke="#7A8BA8" stroke-width="2.8" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.62"/>
+    <path d="M1316 620 C1325 724 817 724 806 638" fill="none" stroke="#7A8BA8" stroke-width="2.4" stroke-dasharray="8 10" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.48"/>
+  </g>
+
+  <g class="font">
+    <g filter="url(#softShadow)">
+      <rect x="650" y="338" width="300" height="148" rx="30" fill="url(#coreGrad)"/>
+      <rect x="660" y="348" width="280" height="128" rx="24" fill="#FFFFFF" opacity="0.16"/>
+    </g>
+    <text x="800" y="366" text-anchor="middle" fill="#ECF8FF" font-size="15" font-weight="570">Workflow Memory Kernel</text>
+    <text x="800" y="397" text-anchor="middle" fill="#FFFFFF" font-size="31" font-weight="780">ResearchLoop Core</text>
+    <text x="800" y="427" text-anchor="middle" fill="#F8FEFF" font-size="24" font-weight="700">工作流记忆内核</text>
+    <g filter="url(#softShadow)">
+      <rect x="642" y="518" width="316" height="50" rx="21" fill="#FFFFFF" opacity="0.92" stroke="#DCE7F5"/>
+    </g>
+    <text x="800" y="538" text-anchor="middle" class="memory-en">Store · Retrieve · Review · Validate · Evolve</text>
+    <text x="800" y="559" text-anchor="middle" class="memory-cn">存储 · 检索 · 审查 · 验证 · 演化</text>
+  </g>
+
+  <g class="font" filter="url(#softShadow)">
+    <g transform="translate(554 278)">
+      <rect width="150" height="68" rx="18" fill="#FFFFFF" stroke="#DCE7F5"/>
+      <circle cx="26" cy="34" r="11" fill="#7FA7FF" opacity="0.85"/>
+      <text x="50" y="30" class="loop-en">Paper Loop</text>
+      <text x="50" y="49" class="loop-cn">论文循环</text>
+    </g>
+    <g transform="translate(724 258)">
+      <rect width="154" height="68" rx="18" fill="#FFFFFF" stroke="#DCE7F5"/>
+      <circle cx="26" cy="34" r="11" fill="#6CCB9A" opacity="0.85"/>
+      <text x="50" y="30" class="loop-en">Literature Loop</text>
+      <text x="50" y="49" class="loop-cn">文献循环</text>
+    </g>
+    <g transform="translate(898 278)">
+      <rect width="148" height="68" rx="18" fill="#FFFFFF" stroke="#DCE7F5"/>
+      <circle cx="26" cy="34" r="11" fill="#F4B85B" opacity="0.9"/>
+      <text x="50" y="30" class="loop-en">Figure Loop</text>
+      <text x="50" y="49" class="loop-cn">图表循环</text>
+    </g>
+    <g transform="translate(548 442)">
+      <rect width="178" height="72" rx="18" fill="#FFFFFF" stroke="#DCE7F5"/>
+      <circle cx="26" cy="36" r="11" fill="#F28B82" opacity="0.9"/>
+      <text x="50" y="31" class="loop-en">Visual-to-Editable</text>
+      <text x="50" y="51" class="loop-cn">图文可编辑循环</text>
+    </g>
+    <g transform="translate(874 442)">
+      <rect width="174" height="72" rx="18" fill="#FFFFFF" stroke="#DCE7F5"/>
+      <circle cx="26" cy="36" r="11" fill="#7FA7FF" opacity="0.85"/>
+      <text x="50" y="31" class="loop-en">Evidence Loop</text>
+      <text x="50" y="51" class="loop-cn">证据链循环</text>
+    </g>
+    <g transform="translate(634 574)">
+      <rect width="150" height="68" rx="18" fill="#FFFFFF" stroke="#DCE7F5"/>
+      <circle cx="26" cy="34" r="11" fill="#6CCB9A" opacity="0.85"/>
+      <text x="50" y="30" class="loop-en">Closeout Loop</text>
+      <text x="50" y="49" class="loop-cn">任务复盘循环</text>
+    </g>
+    <g transform="translate(806 574)">
+      <rect width="178" height="68" rx="18" fill="#FFFFFF" stroke="#DCE7F5"/>
+      <circle cx="26" cy="34" r="11" fill="#A78BFA" opacity="0.88"/>
+      <text x="50" y="30" class="loop-en">Self-Evolution Loop</text>
+      <text x="50" y="49" class="loop-cn">自进化循环</text>
+    </g>
+  </g>
+
+  <g class="font" filter="url(#softShadow)">
+    <g transform="translate(1142 282)">
+      <rect width="360" height="58" rx="18" fill="url(#softBlue)" stroke="#DCE7F5"/>
+      <path class="icon" d="M24 22h25v24H24z M31 29h11 M31 36h16"/>
+      <text x="74" y="25" class="card-cn">Literature Cards</text>
+      <text x="74" y="43" class="card-en">文献卡片</text>
+    </g>
+    <g transform="translate(1142 352)">
+      <rect width="360" height="58" rx="18" fill="url(#softWarm)" stroke="#DCE7F5"/>
+      <path class="icon-warm" d="M24 43l9-10 7 7 7-9 9 12 M24 22h32v25H24z"/>
+      <text x="74" y="25" class="card-cn">Figure &amp; PPT Assets</text>
+      <text x="74" y="43" class="card-en">图表/PPT资产</text>
+    </g>
+    <g transform="translate(1142 422)">
+      <rect width="360" height="58" rx="18" fill="url(#softGreen)" stroke="#DCE7F5"/>
+      <path class="icon-green" d="M24 24h28v22H24z M31 31h14 M31 38h7 M54 28l6-6 M54 42l6 6"/>
+      <text x="74" y="25" class="card-cn">Claim-Evidence Matrix</text>
+      <text x="74" y="43" class="card-en">论点-证据矩阵</text>
+    </g>
+    <g transform="translate(1142 492)">
+      <rect width="360" height="58" rx="18" fill="url(#softBlue)" stroke="#DCE7F5"/>
+      <path class="icon" d="M27 22h24l7 7v18H27z M50 22v8h8 M34 37h15"/>
+      <text x="74" y="25" class="card-cn">Decision Records</text>
+      <text x="74" y="43" class="card-en">决策记录</text>
+    </g>
+    <g transform="translate(1142 562)">
+      <rect width="360" height="58" rx="18" fill="url(#softGreen)" stroke="#DCE7F5"/>
+      <path class="icon-green" d="M31 26l-8 9 8 9 M51 26l8 9-8 9 M39 46l6-24"/>
+      <text x="74" y="25" class="card-cn">Reusable Prompts &amp; Scripts</text>
+      <text x="74" y="43" class="card-en">可复用提示词与脚本</text>
+    </g>
+    <g transform="translate(1142 632)">
+      <rect width="360" height="58" rx="18" fill="url(#softWarm)" stroke="#DCE7F5"/>
+      <path class="icon-warm" d="M24 29h32v22H24z M29 22h22l5 7H24z M32 39h16"/>
+      <text x="74" y="25" class="card-cn">Paper Release Pack</text>
+      <text x="74" y="43" class="card-en">论文发布包</text>
+    </g>
+  </g>
+
+  <g class="font">
+    <rect x="60" y="708" width="1480" height="170" rx="28" fill="#FFFFFF" opacity="0.90" stroke="#DCE7F5" filter="url(#shadow)"/>
+    <text x="96" y="748" class="govern-title">治理边界：安全、可验证、可复用</text>
+    <text x="96" y="775" class="govern-en">Governance: Safe, Validated, Reusable</text>
+    <text x="1182" y="708" class="small">Workflow Memory feeds Paper 2 · 工作流记忆反哺下一篇论文</text>
+    <g filter="url(#softShadow)">
+      <g transform="translate(96 802)">
+        <rect width="350" height="36" rx="18" fill="#F6FAFF" stroke="#DCE7F5"/>
+        <text x="18" y="23" class="chip-bottom">No raw private data in repo / 不提交原始私密数据</text>
+      </g>
+      <g transform="translate(466 802)">
+        <rect width="265" height="36" rx="18" fill="#F8FCF6" stroke="#DCE7F5"/>
+        <text x="18" y="23" class="chip-bottom">Validators before reuse / 复用前验证</text>
+      </g>
+      <g transform="translate(752 802)">
+        <rect width="315" height="36" rx="18" fill="#FFF9EE" stroke="#DCE7F5"/>
+        <text x="18" y="23" class="chip-bottom">Candidate-first evolution / 候选式自进化</text>
+      </g>
+      <g transform="translate(96 840)">
+        <rect width="520" height="36" rx="18" fill="#F6FAFF" stroke="#DCE7F5"/>
+        <text x="18" y="23" class="chip-bottom">Agent-agnostic / 兼容 Codex · Claude Code · Cursor</text>
+      </g>
+      <g transform="translate(638 840)">
+        <rect width="460" height="36" rx="18" fill="#F8FCF6" stroke="#DCE7F5"/>
+        <text x="18" y="23" class="chip-bottom">Researcher remains in control / 研究者保持控制权</text>
+      </g>
+    </g>
+  </g>
+
+  <g opacity="0.18">
+    <circle cx="800" cy="410" r="176" fill="none" stroke="#7A8BA8" stroke-width="1.2" stroke-dasharray="7 12"/>
+  </g>
+</svg>

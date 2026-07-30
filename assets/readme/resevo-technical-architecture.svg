@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="technical-light-title technical-light-desc">
+<title id="technical-light-title">MycEvo 技术架构 / MycEvo Technical Architecture</title>
+<desc id="technical-light-desc">外部智能体通过 CLI 或 stdio MCP 访问公共 MycEvo 核心，再服务私有科研工作区。候选记忆必须经过留出验证、证据门禁与人工晋升才能复用；脱敏候选可经验证和评审改进公共引擎，原始私有证据始终留在本地。 External agents access the public core through CLI or stdio MCP and serve a private research workspace with evidence-gated evolution.</desc>
+<defs>
+  <marker id="technical-light-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M1 1 L11 6 L1 11 Z" fill="#2F2A26"/></marker>
+  <marker id="technical-light-forest-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M1 1 L11 6 L1 11 Z" fill="#405A47"/></marker>
+  <style>
+    text { font-family: Inter, Arial, system-ui, Noto Sans SC, Microsoft YaHei, PingFang SC, sans-serif; fill: #2F2A26; }
+    .brow-zh { font-size: 14px; font-weight: 760; letter-spacing: 1px; fill: #405A47; }
+    .brow-en { font-size: 10px; font-weight: 720; letter-spacing: 1.1px; fill: #405A47; }
+    .title-zh { font-size: 36px; font-weight: 760; }
+    .title-en { font-size: 25px; font-weight: 680; }
+    .sub-zh { font-size: 15px; fill: #746B63; }
+    .sub-en { font-size: 12px; fill: #746B63; }
+    .node-zh { font-size: 19px; font-weight: 750; }
+    .node-en { font-size: 13px; font-weight: 680; }
+    .small-zh { font-size: 14px; font-weight: 650; }
+    .small-en { font-size: 10px; fill: #746B63; }
+    .micro-zh { font-size: 12px; fill: #746B63; }
+    .micro-en { font-size: 9px; fill: #746B63; }
+    .flow { fill: none; stroke: #2F2A26; stroke-width: 5; stroke-linecap: round; marker-end: url(#technical-light-arrow); }
+    .feedback { fill: none; stroke: #405A47; stroke-width: 5; stroke-linecap: round; marker-end: url(#technical-light-forest-arrow); }
+  </style>
+</defs>
+<rect width="1600" height="900" fill="#F7F3EA"/>
+<rect x="38" y="38" width="1524" height="824" rx="28" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/>
+<text x="72" y="72"><tspan x="72" class="brow-zh">本地 CLI + MCP 外部科研大脑</tspan><tspan x="72" dy="18" class="brow-en">LOCAL CLI + MCP EXTERNAL RESEARCH BRAIN</tspan></text>
+<text x="72" y="130"><tspan x="72" class="title-zh">MycEvo 技术架构</tspan><tspan x="72" dy="34" class="title-en">MycEvo Technical Architecture</tspan></text>
+<text x="74" y="199"><tspan x="74" class="sub-zh">基于本地 CLI 与 MCP 的外部大脑，以证据门禁控制持续进化。</tspan><tspan x="74" dy="21" class="sub-en">A local CLI and MCP external brain with evidence-gated evolution.</tspan></text>
+
+<rect x="70" y="250" width="250" height="270" rx="24" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="3"/>
+<text x="95" y="280"><tspan x="95" class="brow-zh">外部智能体</tspan><tspan x="95" dy="18" class="brow-en">EXTERNAL AGENTS</tspan></text>
+<rect x="100" y="318" width="190" height="54" rx="14" fill="#F4EFE8" stroke="#D9CEC2" stroke-width="2"/><text x="195" y="340" text-anchor="middle"><tspan x="195" class="small-zh">代码智能体</tspan><tspan x="195" dy="19" class="small-en">Codex</tspan></text>
+<rect x="100" y="387" width="190" height="54" rx="14" fill="#F4EFE8" stroke="#D9CEC2" stroke-width="2"/><text x="195" y="409" text-anchor="middle"><tspan x="195" class="small-zh">编程智能体</tspan><tspan x="195" dy="19" class="small-en">Claude Code</tspan></text>
+<rect x="100" y="456" width="190" height="44" rx="13" fill="#F4EFE8" stroke="#D9CEC2" stroke-width="2"/><text x="195" y="474" text-anchor="middle"><tspan x="195" class="small-zh">编辑器智能体</tspan><tspan x="195" dy="17" class="small-en">Cursor</tspan></text>
+
+<rect x="365" y="230" width="610" height="300" rx="28" fill="#F4EFE8" stroke="#D97757" stroke-width="3"/>
+<text x="395" y="258"><tspan x="395" class="brow-zh" style="fill:#D97757">公共 MycEvo 引擎</tspan><tspan x="395" dy="18" class="brow-en" style="fill:#D97757">PUBLIC MYCEVO ENGINE</tspan></text>
+<rect x="400" y="310" width="210" height="160" rx="22" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="3"/>
+<text x="505" y="351" text-anchor="middle"><tspan x="505" class="node-zh">CLI / stdio MCP 接入</tspan><tspan x="505" dy="28" class="node-en">CLI / stdio MCP</tspan></text>
+<text x="505" y="424" text-anchor="middle"><tspan x="505" class="micro-zh">智能体安全访问</tspan><tspan x="505" dy="18" class="micro-en">agent-safe access</tspan></text>
+<rect x="680" y="295" width="250" height="190" rx="24" fill="#F9E6DE" stroke="#D97757" stroke-width="4"/>
+<text x="805" y="346" text-anchor="middle"><tspan x="805" class="node-zh">共享 MycEvo 核心</tspan><tspan x="805" dy="28" class="node-en">Shared MycEvo Core</tspan></text>
+<text x="805" y="424" text-anchor="middle"><tspan x="805" class="micro-zh">可移植服务与契约</tspan><tspan x="805" dy="18" class="micro-en">portable services + contracts</tspan></text>
+<path d="M320 385 H390 M610 390 H670 M930 390 H1000" class="flow"/>
+
+<rect x="1015" y="230" width="505" height="300" rx="28" fill="#E7ECE3" stroke="#405A47" stroke-width="4"/>
+<text x="1045" y="258"><tspan x="1045" class="brow-zh">私有科研工作区</tspan><tspan x="1045" dy="18" class="brow-en">PRIVATE RESEARCH WORKSPACE</tspan></text>
+<text x="1045" y="302"><tspan x="1045" class="micro-zh">项目本地保存证据、主张、资产与决策</tspan><tspan x="1045" dy="17" class="micro-en">project-local evidence, claims, artifacts, and decisions</tspan></text>
+<g aria-label="私有科研工作区模块 / Private workspace modules">
+  <rect x="1045" y="348" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1095" y="374" text-anchor="middle"><tspan x="1095" class="small-zh">注册表</tspan><tspan x="1095" dy="19" class="small-en">Registry</tspan></text>
+  <rect x="1158" y="348" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1208" y="374" text-anchor="middle"><tspan x="1208" class="small-zh">检索</tspan><tspan x="1208" dy="19" class="small-en">Retrieval</tspan></text>
+  <rect x="1271" y="348" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1321" y="374" text-anchor="middle"><tspan x="1321" class="small-zh">溯源</tspan><tspan x="1321" dy="19" class="small-en">Provenance</tspan></text>
+  <rect x="1384" y="348" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1434" y="374" text-anchor="middle"><tspan x="1434" class="small-zh">验证器</tspan><tspan x="1434" dy="19" class="small-en">Validators</tspan></text>
+  <rect x="1045" y="430" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1095" y="456" text-anchor="middle"><tspan x="1095" class="small-zh">主张</tspan><tspan x="1095" dy="19" class="small-en">Claims</tspan></text>
+  <rect x="1158" y="430" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1208" y="456" text-anchor="middle"><tspan x="1208" class="small-zh">证据</tspan><tspan x="1208" dy="19" class="small-en">Evidence</tspan></text>
+  <rect x="1271" y="430" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1321" y="456" text-anchor="middle"><tspan x="1321" class="small-zh">产物</tspan><tspan x="1321" dy="19" class="small-en">Artifacts</tspan></text>
+  <rect x="1384" y="430" width="100" height="62" rx="14" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="2"/><text x="1434" y="456" text-anchor="middle"><tspan x="1434" class="small-zh">决策</tspan><tspan x="1434" dy="19" class="small-en">Decisions</tspan></text>
+</g>
+
+<line x1="72" y1="548" x2="1528" y2="548" stroke="#D9CEC2" stroke-width="2"/>
+<text x="72" y="575"><tspan x="72" class="brow-zh" style="fill:#D97757">演化门禁 · 候选优先</tspan><tspan x="72" dy="18" class="brow-en" style="fill:#D97757">EVOLUTION GATE · CANDIDATE-FIRST</tspan></text>
+<text x="1518" y="575" text-anchor="end"><tspan x="1518" class="micro-zh">可复用状态需要证据与人工决策</tspan><tspan x="1518" dy="18" class="micro-en">reusable status requires evidence and a human decision</tspan></text>
+<g aria-label="候选到可复用工作流记忆门禁 / Candidate to reusable workflow memory gate">
+  <rect x="80" y="615" width="190" height="82" rx="22" fill="#F4EFE8" stroke="#746B63" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="175" y="648" text-anchor="middle"><tspan x="175" class="node-zh">候选</tspan><tspan x="175" dy="25" class="node-en">Candidate</tspan></text>
+  <path d="M270 656 H328" class="flow"/>
+  <rect x="338" y="615" width="230" height="82" rx="22" fill="#FFFDF8" stroke="#D9CEC2" stroke-width="3"/>
+  <text x="453" y="648" text-anchor="middle"><tspan x="453" class="node-zh">留出验证</tspan><tspan x="453" dy="25" class="node-en">Held-out Validation</tspan></text>
+  <path d="M568 656 H626" class="flow"/>
+  <rect x="636" y="605" width="210" height="102" rx="24" fill="#F9E6DE" stroke="#D97757" stroke-width="4"/>
+  <text x="741" y="647" text-anchor="middle"><tspan x="741" class="node-zh">证据门禁</tspan><tspan x="741" dy="26" class="node-en">Evidence Gate</tspan></text>
+  <path d="M846 656 H904" class="flow"/>
+  <rect x="914" y="615" width="220" height="82" rx="22" fill="#FFFDF8" stroke="#D97757" stroke-width="3"/>
+  <circle cx="950" cy="642" r="10" fill="#D97757"/><path d="M935 672 Q950 653 965 672" fill="none" stroke="#D97757" stroke-width="3"/>
+  <text x="1035" y="648" text-anchor="middle"><tspan x="1035" class="node-zh">人工晋升</tspan><tspan x="1035" dy="25" class="node-en">Human Promotion</tspan></text>
+  <path d="M1134 656 H1192" class="flow"/>
+  <rect x="1202" y="605" width="300" height="102" rx="24" fill="#E7ECE3" stroke="#405A47" stroke-width="4"/>
+  <text x="1352" y="647" text-anchor="middle"><tspan x="1352" class="node-zh">可复用工作流记忆</tspan><tspan x="1352" dy="26" class="node-en">Reusable Workflow Memory</tspan></text>
+</g>
+
+<text x="72" y="739"><tspan x="72" class="brow-zh">脱敏后的公共改进 · 从右向左</tspan><tspan x="72" dy="18" class="brow-en">SANITIZED PUBLIC IMPROVEMENT · RIGHT TO LEFT</tspan></text>
+<text x="1518" y="739" text-anchor="end"><tspan x="1518" class="micro-zh">原始私有证据始终留在本地</tspan><tspan x="1518" dy="18" class="micro-en">raw private evidence stays local</tspan></text>
+<g aria-label="私有真实使用到脱敏候选、验证评审和公共改进 / Private use to sanitized public improvement">
+  <rect x="1130" y="785" width="350" height="60" rx="22" fill="#E7ECE3" stroke="#405A47" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="1305" y="809" text-anchor="middle"><tspan x="1305" class="small-zh">私有真实使用</tspan><tspan x="1305" dy="20" class="small-en">Private real-world use</tspan></text>
+  <path d="M1130 815 H1075" class="feedback"/>
+  <rect x="780" y="785" width="285" height="60" rx="22" fill="#F4EFE8" stroke="#405A47" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="922" y="809" text-anchor="middle"><tspan x="922" class="small-zh">脱敏候选</tspan><tspan x="922" dy="20" class="small-en">Sanitized candidate</tspan></text>
+  <path d="M780 815 H725" class="feedback"/>
+  <rect x="430" y="785" width="285" height="60" rx="22" fill="#FFFDF8" stroke="#405A47" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="572" y="809" text-anchor="middle"><tspan x="572" class="small-zh">验证与评审</tspan><tspan x="572" dy="20" class="small-en">Validation and review</tspan></text>
+  <path d="M430 815 H375" class="feedback"/>
+  <rect x="80" y="785" width="285" height="60" rx="22" fill="#F9E6DE" stroke="#D97757" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="222" y="809" text-anchor="middle"><tspan x="222" class="small-zh">公共 MycEvo 改进</tspan><tspan x="222" dy="20" class="small-en">Public MycEvo improvement</tspan></text>
+</g>
+</svg>
