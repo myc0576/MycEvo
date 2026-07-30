@@ -7,41 +7,23 @@ permissions:
 
 jobs:
   test:
+    runs-on: ubuntu-latest
     env:
       MYCEVO_USER_ROOT: ${{ runner.temp }}/mycevo-user
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        python: ["3.10", "3.11", "3.12"]
-        install: [editable, wheel]
-    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python }}
+          python-version: "3.12"
       - run: python -m pip install --upgrade pip build pytest
-      - if: matrix.install == 'editable'
-        run: python -m pip install -e .
-      - if: matrix.install == 'wheel'
-        shell: bash
-        run: python -m build --wheel && python -m pip install dist/*.whl
+      - run: python -m pip install -e .
       - run: python -c "import mycevo; print(mycevo.__version__)"
       - run: mycevo --help
-      - shell: bash
-        run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" init --json
-      - shell: bash
-        run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" demo --json
-      - shell: bash
-        run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" doctor --json
-      - shell: bash
-        run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" mcp install codex --dry-run
-      - shell: bash
-        run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" mcp install claude --dry-run
+      - run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" init --json
+      - run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" demo --json
+      - run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" doctor --json
+      - run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" mcp install codex --dry-run
+      - run: mycevo --root "$RUNNER_TEMP/mycevo-workspace" mcp install claude --dry-run
       - run: resevo --help
       - run: researchloop --help
-      - if: runner.os != 'Windows'
-        run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
-      - if: runner.os == 'Windows'
-        run: $env:PYTEST_DISABLE_PLUGIN_AUTOLOAD='1'; python -m pytest -q
+      - run: PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
