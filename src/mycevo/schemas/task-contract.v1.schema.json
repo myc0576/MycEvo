@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mycevo.dev/schemas/task-contract.v1.schema.json",
+  "title": "MycEvo TaskContract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "task_id", "objective", "required_inputs", "required_outputs", "constraints", "allowed_side_effects", "max_modules", "max_edges"],
+  "properties": {
+    "schema": {"const": "mycevo.task_contract.v1"},
+    "task_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "objective": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "required_inputs": {"type": "array", "items": {"$ref": "module-contract.v1.schema.json#/$defs/port"}},
+    "required_outputs": {"type": "array", "items": {"$ref": "module-contract.v1.schema.json#/$defs/port"}},
+    "constraints": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}},
+    "allowed_side_effects": {"type": "array", "uniqueItems": true, "items": {"enum": ["read_workspace", "write_workspace", "spawn_process", "network", "external_service", "human_interaction"]}},
+    "max_modules": {"type": "integer", "minimum": 1, "maximum": 10000},
+    "max_edges": {"type": "integer", "minimum": 0, "maximum": 100000}
+  }
+}

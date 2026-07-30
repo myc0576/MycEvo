@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .core import Paths, read_yaml, resolve_paths, write_yaml_if_missing
+from .migration import inspect_legacy_tree, symlink_component
 from .provenance import record_run
 
 
@@ -230,8 +231,9 @@ def workspace_remove(paths: Paths, name: str) -> dict[str, Any]:
 def migration_plan(paths: Paths, apply: bool = False) -> dict[str, Any]:
     legacy = paths.legacy_workspace_meta
     backup = paths.workspace / ".mycevo-migration-backup" / "resevo"
+    mapping_manifest = inspect_legacy_tree(legacy, paths.workspace_meta)
     result = {
-        "ok": True,
+        "ok": mapping_manifest["ok"],
         "migration": "resevo-to-mycevo",
         "apply": apply,
         "actions": [
@@ -245,20 +247,90 @@ def migration_plan(paths: Paths, apply: bool = False) -> dict[str, Any]:
         "target_meta": str(paths.workspace_meta),
         "backup": str(backup),
         "legacy_exists": legacy.exists(),
+        "mapping_manifest": mapping_manifest,
         "rollback": f"restore {backup} to {legacy}",
     }
+    if not mapping_manifest["ok"]:
+        result.update(
+            {
+                "status": "migration_blocked",
+                "reject_code": mapping_manifest["reject_code"],
+                "changed": False,
+            }
+        )
+        return result
     if apply:
         if legacy.exists():
+            backup_relative = backup.relative_to(paths.workspace)
+            backup_redirect = symlink_component(paths.workspace, backup_relative)
+            if backup_redirect:
+                result.update(
+                    {
+                        "ok": False,
+                        "status": "migration_blocked",
+                        "reject_code": "MIGRATION_AUTHORITY_UNSUPPORTED",
+                        "changed": False,
+                        "detail": f"backup path redirect is not allowed: {backup_redirect}",
+                    }
+                )
+                return result
+            if backup.parent.exists() and not backup.parent.is_dir():
+                result.update(
+                    {
+                        "ok": False,
+                        "status": "migration_blocked",
+                        "reject_code": "MIGRATION_TARGET_CONFLICT",
+                        "changed": False,
+                        "detail": "backup parent is not a directory",
+                    }
+                )
+                return result
             if backup.exists():
                 result.update({"ok": False, "status": "backup_exists", "changed": False})
                 return result
             backup.parent.mkdir(parents=True, exist_ok=True)
+            backup_redirect = symlink_component(paths.workspace, backup_relative)
+            if backup_redirect:
+                result.update(
+                    {
+                        "ok": False,
+                        "status": "migration_blocked",
+                        "reject_code": "MIGRATION_AUTHORITY_UNSUPPORTED",
+                        "changed": False,
+                        "detail": f"backup path redirect is not allowed: {backup_redirect}",
+                    }
+                )
+                return result
             shutil.copytree(legacy, backup)
+            frozen_manifest = inspect_legacy_tree(backup, paths.workspace_meta)
+            if not frozen_manifest["ok"]:
+                result.update(
+                    {
+                        "ok": False,
+                        "status": "migration_blocked_after_backup",
+                        "reject_code": frozen_manifest["reject_code"],
+                        "changed": True,
+                        "backup_created": True,
+                        "mapping_manifest": frozen_manifest,
+                    }
+                )
+                return result
             paths.workspace_meta.mkdir(parents=True, exist_ok=True)
-            for source in legacy.rglob("*"):
+            for source in backup.rglob("*"):
                 if source.is_file():
-                    relative = source.relative_to(legacy)
+                    relative = source.relative_to(backup)
                     target = paths.workspace_meta / relative
+                    if symlink_component(paths.workspace_meta, relative):
+                        result.update(
+                            {
+                                "ok": False,
+                                "status": "migration_blocked_after_backup",
+                                "reject_code": "MIGRATION_AUTHORITY_UNSUPPORTED",
+                                "changed": True,
+                                "backup_created": True,
+                            }
+                        )
+                        return result
                     if not target.exists():
                         target.parent.mkdir(parents=True, exist_ok=True)
                         shutil.copy2(source, target)

@@ -1,0 +1,18 @@
+schema: mycevo.plugin_manifest.v1
+id: paperframes-reference
+version: 0.1.0
+entry_point: paperframes_reference:plugin
+status: implemented
+runtime: python
+capabilities:
+  read: [input.pdf]
+  write: [build/golden-path/**]
+  network: false
+  subprocess: [python, typst]
+outputs:
+  - path: build/golden-path/paperframes.ir.json
+    media_type: application/json
+  - path: build/golden-path/provenance.json
+    media_type: application/json
+  - path: build/golden-path/reversed-paper.pdf
+    media_type: application/pdf

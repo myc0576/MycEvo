@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mycevo.dev/schemas/plugin-manifest.v1.schema.json",
+  "title": "MycEvo Plugin Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "entry_point", "status", "capabilities", "outputs"],
+  "properties": {
+    "schema": {"const": "mycevo.plugin_manifest.v1"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,127}$"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"},
+    "entry_point": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_.-]*:[A-Za-z_][A-Za-z0-9_.-]*$"},
+    "status": {"enum": ["implemented", "planned", "deprecated"]},
+    "runtime": {"type": "string", "enum": ["python", "executable", "container"]},
+    "plugin_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read", "write", "network", "subprocess"],
+      "properties": {
+        "read": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "write": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "network": {"type": "boolean"},
+        "subprocess": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "media_type"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^(?![A-Za-z]:)(?!/)(?!\\\\)[^\\u0000]+$"},
+          "media_type": {"type": "string", "minLength": 1}
+        }
+      },
+      "uniqueItems": true
+    }
+  }
+}

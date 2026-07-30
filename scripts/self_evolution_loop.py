@@ -310,9 +310,9 @@ def init_intake(project_root: Path, trigger_text: str, out: Path) -> dict[str, A
             "verification_commands": [],
         },
         "risk_boundary": [
-            "Do not write to G:\\knowledge\\_harness or G:\\知识库\\_harness.",
+            "Do not write to deprecated or ambiguous harness directories.",
             "Do not auto-promote candidate material to validated, reusable, approved, pass, or paper_ready.",
-            "Do not copy raw data, model weights, CAD binaries, or temporary files into G:\\knowledge.",
+            "Do not copy raw data, model weights, CAD binaries, or temporary files into reusable knowledge.",
         ],
         "candidates": {
             "knowledge": [],

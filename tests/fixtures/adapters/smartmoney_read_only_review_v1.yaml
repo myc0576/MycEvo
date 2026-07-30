@@ -1,0 +1,337 @@
+schema_version: "1.0"
+fixture_id: adapter.smartmoney.read_only_review.v1
+adapter:
+  adapter_id: smartmoney.read_only_review
+  source_kind: public_repository
+  source_revision: acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4
+  source_refs:
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/README.md
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/docs/harness-contract.md
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/docs/architecture.md
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/docs/agent-loop.md
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/AGENT_RUNBOOK.md
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/manifest.py
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/decision.py
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/outcome.py
+    - https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/evaluator.py
+  source_pins:
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/README.md, sha256: 7e2cf8f83b9f93273b94bc4e7bc17b5fea17136e52adffe39b08ee506e43679b}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/docs/harness-contract.md, sha256: 905005865e953561787196b513541d27a86836dc743ab59860bf03f433316489}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/docs/architecture.md, sha256: 62aba377adab2c8d770e99838ce3ff8739357565acf920d9af8a208375845735}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/docs/agent-loop.md, sha256: 41b04fb1952ad3eb58ff29838e1d5049df66f013bc6e92cb47f6be64019aeb91}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/AGENT_RUNBOOK.md, sha256: cd5298f2133df7f4a79150b802cdcfe9f124402fb3092da99f8d1a590d1c3678}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/manifest.py, sha256: 7b68486c600590c147dae94c15fdb94cea2b259fcf4cab7164e92e5e45585d06}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/decision.py, sha256: e70c6cac19dd90a80e05e98342d795f22dac638c518f10860a4e67c42837e4fb}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/outcome.py, sha256: a48f1636c9214a2c0f776ebaf5f97ee1dfbfcfe00024532c3826dcabd1158fec}
+    - {ref: https://raw.githubusercontent.com/myc0576/smartmoney-cub-harness/acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4/src/smartmoney_cub_harness/evaluator.py, sha256: 2d9614da164f4b79e42fd94e2320f44d050977b42fb90d1a28d99a2733b31724}
+  sanitization:
+    synthetic_only: true
+    contains_private_paths: false
+    contains_private_data: false
+    contains_secrets: false
+    contains_real_symbols_or_positions: false
+  normalization_rules:
+    - The repository's review chain becomes explicit typed graph edges.
+    - D1 and D3 are static temporal prerequisites, not scheduler instructions.
+    - Trading fields stay in artifact schemas or adapter_extensions.
+    - Promotion recommendation and authorized pointer movement are separate modules.
+
+method_graph:
+  graph_id: graph.smartmoney.read_only_review
+  version_id: graph.smartmoney.read_only_review.v1
+  purpose: Review a toy decision record, bind delayed outcomes, evaluate a challenger rule, and preserve human-controlled promotion.
+  applicability_conditions:
+    - Inputs are synthetic or explicitly local review artifacts.
+    - No order, cancel, trade, broker, or account mutation capability is available.
+  entry_module_ids: [plan_and_observe]
+  exit_module_ids: [append_review_memory]
+  lineage:
+    parent_version_id: null
+    source_adapter_id: smartmoney.read_only_review
+    source_revision: acf7d6d3fd99dd6de61593a5101f56b1ff4e02f4
+    content_hash_policy: computed_from_canonical_json
+  modules:
+    - module_id: plan_and_observe
+      version_id: plan_and_observe.v1
+      portable_kind: input
+      purpose: Capture the review plan and a read-only toy observation.
+      applicability_conditions: [A sanitized review request and toy input are available.]
+      inputs:
+        - {name: task, type: task_contract}
+        - {name: toy_input, type: review_input}
+      outputs: [{name: observation, type: review_observation}]
+      preconditions: [safety_declaration_is_read_only]
+      postconditions: [observation_has_provenance_and_availability_time]
+      required_evidence: [{type: source_ref, minimum_count: 1}]
+      produced_evidence: [{type: observation_ref, role: decision_input}]
+      side_effect_class: candidate_artifact_write
+      permission_requirements: [workspace_read, candidate_write]
+      failure_modes: [unsafe_capability_requested, input_provenance_missing, availability_time_missing]
+      counterexamples: [A broker-backed action module is not a review observation.]
+      fallback_refs: []
+      cost: low
+      risk: medium
+      reversibility: clean
+      content_refs: [toy_review_input]
+      rule_refs: [read_only_no_order_no_cancel_no_trade, no_future_leakage]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions:
+        source_stage: [plan, observe]
+        forbidden_capabilities: [order, cancel, trade, broker_write, account_write]
+
+    - module_id: record_manifest_and_decision
+      version_id: record_manifest_and_decision.v1
+      portable_kind: transform
+      purpose: Record an auditable manifest and decision contract without executing an action.
+      applicability_conditions: [A provenance-bearing observation exists.]
+      inputs: [{name: observation, type: review_observation}]
+      outputs:
+        - {name: manifest, type: review_manifest}
+        - {name: decision, type: review_decision}
+      preconditions: [observation_has_provenance_and_availability_time]
+      postconditions: [decision_time_and_safety_contract_are_frozen]
+      required_evidence: [{type: observation_ref, minimum_count: 1}]
+      produced_evidence:
+        - {type: manifest_ref, role: run_manifest}
+        - {type: decision_ref, role: decision_record}
+      side_effect_class: audit_append_only
+      permission_requirements: [workspace_read, audit_append]
+      failure_modes: [safety_declaration_missing, decision_contract_incomplete]
+      counterexamples: [A generated recommendation is not evidence that an action occurred.]
+      fallback_refs: [plan_and_observe]
+      cost: low
+      risk: medium
+      reversibility: append_compensating_record
+      content_refs: [manifest_schema, decision_schema]
+      rule_refs: [read_only_no_order_no_cancel_no_trade]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions:
+        source_stage: record
+        decision_payload_fields: [action_label, invalidation, time_stop, give_up_conditions]
+
+    - module_id: provenance_and_safety_validation
+      version_id: provenance_and_safety_validation.v1
+      portable_kind: validation
+      purpose: Reject future leakage, missing provenance, or execution-capable contracts.
+      applicability_conditions: [A manifest and decision record exist.]
+      inputs:
+        - {name: manifest, type: review_manifest}
+        - {name: decision, type: review_decision}
+      outputs: [{name: validation, type: policy_decision}]
+      preconditions: [decision_time_and_safety_contract_are_frozen]
+      postconditions: [all_inputs_were_available_at_or_before_decision_time]
+      required_evidence:
+        - {type: manifest_ref, minimum_count: 1}
+        - {type: decision_ref, minimum_count: 1}
+      produced_evidence: [{type: policy_decision_ref, role: provenance_validation}]
+      side_effect_class: audit_append_only
+      permission_requirements: [workspace_read, audit_append]
+      failure_modes: [future_leakage, unsafe_capability_present, data_quality_missing]
+      counterexamples: [Data available after decision_time cannot validate the decision.]
+      fallback_refs: [record_manifest_and_decision]
+      cost: low
+      risk: high
+      reversibility: clean
+      content_refs: []
+      rule_refs: [no_future_leakage, read_only_no_order_no_cancel_no_trade]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_validator: manifest_validation}
+
+    - module_id: bind_delayed_outcomes
+      version_id: bind_delayed_outcomes.v1
+      portable_kind: transform
+      purpose: Bind two delayed review horizons after their evidence becomes available.
+      applicability_conditions: [Provenance and safety validation passed.]
+      inputs:
+        - {name: decision, type: review_decision}
+        - {name: delayed_evidence, type: delayed_outcome_source}
+      outputs:
+        - {name: outcome_short, type: delayed_outcome}
+        - {name: outcome_long, type: delayed_outcome}
+      preconditions: [all_inputs_were_available_at_or_before_decision_time]
+      postconditions: [outcomes_are_bound_to_decision_and_availability_times]
+      required_evidence:
+        - {type: delayed_outcome_source_ref, minimum_count: 2}
+        - {type: immutable_artifact_hash, minimum_count: 1}
+      produced_evidence:
+        - {type: outcome_ref, role: short_horizon}
+        - {type: outcome_ref, role: long_horizon}
+      side_effect_class: candidate_artifact_write
+      permission_requirements: [workspace_read, candidate_write]
+      failure_modes: [outcome_not_yet_available, decision_binding_mismatch, future_leakage]
+      counterexamples: [A scheduler estimate is not a delayed outcome.]
+      fallback_refs: [provenance_and_safety_validation]
+      cost: medium
+      risk: medium
+      reversibility: clean
+      content_refs: [outcome_schema]
+      rule_refs: [delayed_outcome_required, no_future_leakage]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions:
+        source_stage: outcome
+        horizon_labels: [D1, D3]
+
+    - module_id: evaluate_outcomes
+      version_id: evaluate_outcomes.v1
+      portable_kind: validation
+      purpose: Evaluate safety, false alerts, missed opportunities, and risk-contract compliance.
+      applicability_conditions: [Both delayed outcome records are available.]
+      inputs:
+        - {name: outcome_short, type: delayed_outcome}
+        - {name: outcome_long, type: delayed_outcome}
+        - {name: decision, type: review_decision}
+      outputs: [{name: evaluation, type: evaluation_result}]
+      preconditions: [outcomes_are_bound_to_decision_and_availability_times]
+      postconditions: [evaluation_is_bound_to_outcome_and_evaluator_hashes]
+      required_evidence: [{type: outcome_ref, minimum_count: 2}]
+      produced_evidence: [{type: evaluation_result_ref, role: delayed_review}]
+      side_effect_class: audit_append_only
+      permission_requirements: [workspace_read, audit_append]
+      failure_modes: [outcome_binding_mismatch, evaluator_drift, safety_contract_violation]
+      counterexamples: [A plausible narrative without delayed outcomes is not evaluation.]
+      fallback_refs: [bind_delayed_outcomes]
+      cost: medium
+      risk: low
+      reversibility: clean
+      content_refs: [evaluation_schema]
+      rule_refs: [evaluation_threshold_pack, safety_contract]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions:
+        source_stage: evaluate
+        metric_names: [false_alert_rate, missed_opportunity_rate, risk_contract_violation_rate]
+
+    - module_id: create_challenger_candidate
+      version_id: create_challenger_candidate.v1
+      portable_kind: memory
+      purpose: Propose a challenger rule candidate while leaving the champion pointer unchanged.
+      applicability_conditions: [A hash-bound evaluation exists.]
+      inputs: [{name: evaluation, type: evaluation_result}]
+      outputs: [{name: challenger, type: rule_candidate}]
+      preconditions: [evaluation_is_bound_to_outcome_and_evaluator_hashes]
+      postconditions: [candidate_has_lineage_and_no_promotion_effect]
+      required_evidence: [{type: evaluation_result_ref, minimum_count: 1}]
+      produced_evidence: [{type: candidate_record_ref, role: challenger_rule}]
+      side_effect_class: candidate_memory_write
+      permission_requirements: [workspace_read, candidate_write, candidate_memory_write]
+      failure_modes: [champion_mutation_requested, lineage_missing, evidence_threshold_not_met]
+      counterexamples: [A successful loop run cannot mutate the champion.]
+      fallback_refs: [evaluate_outcomes]
+      cost: low
+      risk: high
+      reversibility: clean
+      content_refs: [rule_candidate_schema]
+      rule_refs: [challenger_first, promotion_threshold_pack]
+      memory_refs:
+        - {mode: read, ref: champion_rule_pointer}
+        - {mode: write_candidate, ref: challenger_rule_registry}
+      runtime_bindings: []
+      adapter_extensions: {source_stage: rule_candidate, champion_mutated: false}
+
+    - module_id: human_promotion_gate
+      version_id: human_promotion_gate.v1
+      portable_kind: decision
+      purpose: Record an authorized accept, reject, or defer decision after recommendation thresholds pass.
+      applicability_conditions: [A challenger candidate and evaluation exist.]
+      inputs:
+        - {name: challenger, type: rule_candidate}
+        - {name: evaluation, type: evaluation_result}
+      outputs: [{name: human_decision, type: human_decision}]
+      preconditions: [candidate_has_lineage_and_no_promotion_effect]
+      postconditions: [promotion_decision_is_explicit_and_actor_bound]
+      required_evidence: [{type: evaluation_result_ref, minimum_count: 1}]
+      produced_evidence: [{type: human_decision_ref, role: champion_decision}]
+      side_effect_class: decision_record_append_only
+      permission_requirements: [workspace_read, audit_append, authorized_human_decision]
+      failure_modes: [actor_not_authorized, evidence_gate_not_passed, automatic_confirmation_requested]
+      counterexamples: [Passing recommendation thresholds is not human confirmation.]
+      fallback_refs: [create_challenger_candidate]
+      cost: low
+      risk: high
+      reversibility: review_required
+      content_refs: [promotion_packet_schema]
+      rule_refs: [explicit_human_confirmation, evidence_gate_required]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_command: confirm-promotion}
+
+    - module_id: append_review_memory
+      version_id: append_review_memory.v1
+      portable_kind: output
+      purpose: Append the review trace, case record, memory, and evolution ledger.
+      applicability_conditions: [A promotion decision exists, including defer or reject.]
+      inputs:
+        - {name: human_decision, type: human_decision}
+        - {name: evaluation, type: evaluation_result}
+      outputs: [{name: closeout_record, type: closeout_record}]
+      preconditions: [promotion_decision_is_explicit_and_actor_bound]
+      postconditions: [review_history_is_append_only_and_restartable]
+      required_evidence:
+        - {type: human_decision_ref, minimum_count: 1}
+        - {type: evaluation_result_ref, minimum_count: 1}
+      produced_evidence: [{type: audit_record_ref, role: review_closeout}]
+      side_effect_class: candidate_memory_write
+      permission_requirements: [workspace_read, audit_append, candidate_memory_write]
+      failure_modes: [history_overwrite_requested, private_path_detected, secret_detected]
+      counterexamples: [A memory entry containing a private account path is invalid.]
+      fallback_refs: [human_promotion_gate]
+      cost: low
+      risk: medium
+      reversibility: append_compensating_record
+      content_refs: [loop_report_schema, trace_schema, case_record_schema]
+      rule_refs: [append_only_history, publication_safety]
+      memory_refs: [{mode: write_candidate, ref: review_memory}]
+      runtime_bindings: []
+      adapter_extensions:
+        source_stage: memory
+        source_outputs: [loop_report, trace, case_record, memory, evolution_ledger]
+
+  edges:
+    - {edge_id: e01, source_module_id: plan_and_observe, target_module_id: record_manifest_and_decision, edge_type: sequence}
+    - {edge_id: e02, source_module_id: record_manifest_and_decision, target_module_id: provenance_and_safety_validation, edge_type: governed_by}
+    - {edge_id: e03, source_module_id: provenance_and_safety_validation, target_module_id: bind_delayed_outcomes, edge_type: conditional, condition: "validation.status == 'pass'"}
+    - {edge_id: e04, source_module_id: provenance_and_safety_validation, target_module_id: record_manifest_and_decision, edge_type: fallback, condition: "validation.status != 'pass'"}
+    - {edge_id: e05, source_module_id: bind_delayed_outcomes, target_module_id: evaluate_outcomes, edge_type: parallel, branch: short_horizon, join_key: delayed_outcomes}
+    - {edge_id: e06, source_module_id: bind_delayed_outcomes, target_module_id: evaluate_outcomes, edge_type: parallel, branch: long_horizon, join_key: delayed_outcomes}
+    - {edge_id: e07, source_module_id: evaluate_outcomes, target_module_id: create_challenger_candidate, edge_type: evidence_for}
+    - {edge_id: e08, source_module_id: create_challenger_candidate, target_module_id: human_promotion_gate, edge_type: writes_candidate_memory}
+    - {edge_id: e09, source_module_id: evaluate_outcomes, target_module_id: human_promotion_gate, edge_type: depends_on}
+    - {edge_id: e10, source_module_id: human_promotion_gate, target_module_id: append_review_memory, edge_type: sequence}
+    - {edge_id: e11, source_module_id: create_challenger_candidate, target_module_id: append_review_memory, edge_type: reads_memory}
+
+fitness:
+  source_gaps_resolved_by_adapter:
+    - gap_id: trading.temporal_wait_not_core_execution
+      blocking_if_unresolved: true
+      resolution: Delayed horizons are typed evidence prerequisites; scheduling remains outside the core.
+    - gap_id: trading.permissions_encoded_as_prose
+      blocking_if_unresolved: true
+      resolution: Every normalized module declares permissions and side effects; forbidden capabilities stay adapter policy.
+    - gap_id: trading.promotion_and_pointer_movement_conflated_by_command
+      blocking_if_unresolved: true
+      resolution: Recommendation, human decision, and any later canonical pointer event are distinct contracts.
+    - gap_id: trading.domain_payload_fields
+      blocking_if_unresolved: true
+      resolution: Symbol, horizon, price, action, and return fields remain artifact schemas or adapter_extensions.
+  blocking_gaps: []
+  non_blocking_gaps:
+    - Exact runtime timing for delayed evidence belongs to a scheduler adapter.
+    - Optional external multi-agent review bridges are runtime bindings and are not required by the core.
+    - Domain metric weights and thresholds belong to the trading BenchmarkPack.
+  domain_leakage:
+    forbidden_core_keys_present: []
+    adapter_only_keys:
+      - source_stage
+      - forbidden_capabilities
+      - decision_payload_fields
+      - source_validator
+      - horizon_labels
+      - metric_names
+      - champion_mutated
+      - source_command
+      - source_outputs
+  schema_freeze_verdict: ready

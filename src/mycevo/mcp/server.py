@@ -66,6 +66,12 @@ def _local_search(query: str, limit: int) -> dict[str, Any]:
 
 mcp = FastMCP("MycEvo")
 
+
+@mcp.tool()
+def plugin_plan(plugin_id: str, workspace: str, inputs: list[str] | None = None) -> dict[str, Any]:
+    """Create a side-effect-free plugin plan; execution needs later authorization."""
+    return {"ok": True, "status": "planned", "plan_only": True, "plugin_id": plugin_id, "workspace": str(Path(workspace).resolve()), "inputs": list(inputs or []), "execution_authorized": False}
+
 ALLOWED_READ_ROOTS = [
     REUSABLE_KNOWLEDGE_ROOT,
     REUSABLE_PROMPTS_ROOT,

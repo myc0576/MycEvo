@@ -1,0 +1,6 @@
+schema: mycevo.human_decision.v1
+candidate_id: manifest-built-release-staging
+status: pending
+actor: null
+decision: null
+canonical_version: null

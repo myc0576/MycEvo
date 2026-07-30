@@ -1,0 +1,13 @@
+schema: mycevo.task_capture.v1
+task_id: sanitized-handoff-example
+goal: Preserve a reusable release-safety method across Agents.
+constraints:
+  - Never mutate the user's dirty source workspace during release assembly.
+  - Never promote a workflow candidate without a human decision.
+corrections:
+  - A normal git worktree omits untracked release candidates; use a manifest-built staging tree.
+evidence:
+  - docs/release/public-file-manifest.yaml
+acceptance_criteria:
+  - Every staged file is allowlisted and hashed.
+  - Private paths and conflict copies are blocked.

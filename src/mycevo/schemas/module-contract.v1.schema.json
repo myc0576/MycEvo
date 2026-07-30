@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mycevo.dev/schemas/module-contract.v1.schema.json",
+  "title": "MycEvo MethodModule v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "module_id", "version_id", "kind", "name", "description", "inputs", "outputs",
+    "prerequisites", "evidence_refs", "side_effects", "applicability_conditions", "preconditions",
+    "postconditions", "required_evidence", "produced_evidence", "side_effect_class",
+    "permission_requirements", "failure_modes", "counterexamples", "fallback_refs", "cost", "risk",
+    "reversibility", "content_refs", "rule_refs", "memory_refs", "control", "contract_ref", "deprecated"
+  ],
+  "properties": {
+    "schema": {"const": "mycevo.method_module.v1"},
+    "module_id": {"$ref": "#/$defs/identifier"},
+    "version_id": {"$ref": "#/$defs/identifier"},
+    "kind": {"enum": ["input", "transform", "decision", "validation", "memory", "output", "adapter"]},
+    "name": {"type": "string", "minLength": 1, "maxLength": 160},
+    "description": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "inputs": {"type": "array", "items": {"$ref": "#/$defs/port"}},
+    "outputs": {"type": "array", "items": {"$ref": "#/$defs/port"}},
+    "prerequisites": {"$ref": "#/$defs/identifier_array"},
+    "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 512}},
+    "side_effects": {"type": "array", "uniqueItems": true, "items": {"enum": ["read_workspace", "write_workspace", "spawn_process", "network", "external_service", "human_interaction"]}},
+    "applicability_conditions": {"$ref": "#/$defs/text_array"},
+    "preconditions": {"$ref": "#/$defs/text_array"},
+    "postconditions": {"$ref": "#/$defs/text_array"},
+    "required_evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "produced_evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "side_effect_class": {"enum": ["none", "candidate_artifact_write", "audit_append_only", "candidate_memory_write", "decision_record_append_only"]},
+    "permission_requirements": {"type": "array", "uniqueItems": true, "items": {"enum": ["workspace_read", "candidate_write", "audit_append", "candidate_memory_write", "process_spawn", "network_access", "external_service_access", "human_interaction", "authorized_human_decision"]}},
+    "failure_modes": {"$ref": "#/$defs/text_array"},
+    "counterexamples": {"$ref": "#/$defs/text_array"},
+    "fallback_refs": {"$ref": "#/$defs/identifier_array"},
+    "cost": {"enum": ["low", "medium", "high"]},
+    "risk": {"enum": ["low", "medium", "high"]},
+    "reversibility": {"enum": ["clean", "append_compensating_record", "review_required"]},
+    "content_refs": {"$ref": "#/$defs/identifier_array"},
+    "rule_refs": {"$ref": "#/$defs/identifier_array"},
+    "memory_refs": {"$ref": "#/$defs/identifier_array"},
+    "control": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/control"}]},
+    "contract_ref": {"type": ["string", "null"], "minLength": 1, "maxLength": 512},
+    "deprecated": {"type": "boolean"}
+  },
+  "$defs": {
+    "identifier": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "identifier_array": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/identifier"}},
+    "text_array": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}},
+    "port": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "data_type", "required", "multiple"],
+      "properties": {
+        "name": {"$ref": "#/$defs/identifier"}, "data_type": {"$ref": "#/$defs/identifier"},
+        "required": {"type": "boolean"}, "multiple": {"type": "boolean"}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_type", "role", "minimum_count"],
+      "properties": {
+        "evidence_type": {"$ref": "#/$defs/identifier"},
+        "role": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "minimum_count": {"type": "integer", "minimum": 0, "maximum": 100000}
+      }
+    },
+    "control": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "branch_labels", "max_iterations"],
+      "properties": {
+        "kind": {"enum": ["condition", "parallel", "loop", "fallback"]},
+        "branch_labels": {"$ref": "#/$defs/identifier_array"},
+        "max_iterations": {"type": ["integer", "null"], "minimum": 1, "maximum": 10000}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "loop"}}}, "then": {"properties": {"max_iterations": {"type": "integer"}}}},
+        {"if": {"properties": {"kind": {"enum": ["condition", "fallback"]}}}, "then": {"properties": {"branch_labels": {"minItems": 1}, "max_iterations": {"type": "null"}}}},
+        {"if": {"properties": {"kind": {"const": "parallel"}}}, "then": {"properties": {"branch_labels": {"minItems": 2}, "max_iterations": {"type": "null"}}}}
+      ]
+    }
+  }
+}

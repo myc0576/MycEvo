@@ -1,0 +1,11 @@
+schema: mycevo.plugin_manifest.v1
+id: paperframes.latex
+version: 0.1.0
+status: planned
+runtime: external
+capabilities:
+  read: [inputs/**]
+  write: [build/**]
+  network: false
+  subprocess: []
+outputs: []

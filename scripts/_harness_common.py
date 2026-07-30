@@ -12,13 +12,22 @@ from typing import Any, Iterable
 import yaml
 
 
-def configured_path(env_name: str, default: Path | str) -> Path:
-    raw = os.environ.get(env_name)
-    return Path(raw).expanduser() if raw else Path(default)
+def configured_path(env_names: tuple[str, ...], default: Path | str) -> Path:
+    for env_name in env_names:
+        raw = os.environ.get(env_name)
+        if raw:
+            return Path(raw).expanduser().resolve()
+    return Path(default).expanduser().resolve()
 
 
-ROOT = configured_path("RESEARCHLOOP_ROOT", Path(__file__).absolute().parents[1]).resolve()
-ENGINE_ROOT = configured_path("RESEARCHLOOP_ENGINE_ROOT", Path(__file__).absolute().parents[1]).resolve()
+ROOT = configured_path(
+    ("MYCEVO_WORKSPACE_ROOT", "MYCEVO_ROOT", "RESEVO_WORKSPACE_ROOT", "RESEVO_ROOT", "RESEARCHLOOP_ROOT"),
+    Path(__file__).absolute().parents[1],
+)
+ENGINE_ROOT = configured_path(
+    ("MYCEVO_ENGINE_ROOT", "RESEVO_ENGINE_ROOT", "RESEARCHLOOP_ENGINE_ROOT"),
+    Path(__file__).absolute().parents[1],
+)
 
 
 def load_harness_config(root: Path) -> dict[str, Any]:
@@ -27,33 +36,42 @@ def load_harness_config(root: Path) -> dict[str, Any]:
         return {}
     try:
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    except Exception:
+    except (OSError, yaml.YAMLError):
         return {}
     return data if isinstance(data, dict) else {}
 
 
 HARNESS_CONFIG = load_harness_config(ROOT)
 PATH_CONFIG = HARNESS_CONFIG.get("paths", {}) if isinstance(HARNESS_CONFIG.get("paths"), dict) else {}
-WORKSPACE_ROOT = configured_path("RESEARCHLOOP_WORKSPACE_ROOT", PATH_CONFIG.get("workspace_root") or ROOT.parent)
+WORKSPACE_ROOT = configured_path(
+    ("MYCEVO_DATA_ROOT", "RESEARCHLOOP_WORKSPACE_ROOT"),
+    PATH_CONFIG.get("workspace_root") or ROOT.parent,
+)
 REGISTRY_DIR = ROOT / "registry"
 STATE_DIR = ROOT / "state"
 RUNS_DIR = ROOT / "runs"
 REPORTS_DIR = ROOT / "reports"
 SNAPSHOTS_DIR = STATE_DIR / "snapshots"
 REUSABLE_KNOWLEDGE_ROOT = configured_path(
-    "RESEARCHLOOP_REUSABLE_KNOWLEDGE_ROOT",
+    ("MYCEVO_REUSABLE_KNOWLEDGE_ROOT", "RESEARCHLOOP_REUSABLE_KNOWLEDGE_ROOT"),
     PATH_CONFIG.get("reusable_knowledge_root") or WORKSPACE_ROOT / "knowledge" / "reusable_knowledge",
 )
 REUSABLE_PROMPTS_ROOT = configured_path(
-    "RESEARCHLOOP_REUSABLE_PROMPTS_ROOT",
+    ("MYCEVO_REUSABLE_PROMPTS_ROOT", "RESEARCHLOOP_REUSABLE_PROMPTS_ROOT"),
     PATH_CONFIG.get("reusable_prompts_root") or WORKSPACE_ROOT / "knowledge" / "reusable_prompts",
 )
-KNOWLEDGE_ROOT = configured_path("RESEARCHLOOP_KNOWLEDGE_ROOT", REUSABLE_KNOWLEDGE_ROOT.parent)
-PROJECTS_ROOT = configured_path("RESEARCHLOOP_PROJECTS_ROOT", WORKSPACE_ROOT / "projects")
+KNOWLEDGE_ROOT = configured_path(
+    ("MYCEVO_KNOWLEDGE_ROOT", "RESEARCHLOOP_KNOWLEDGE_ROOT"),
+    REUSABLE_KNOWLEDGE_ROOT.parent,
+)
+PROJECTS_ROOT = configured_path(
+    ("MYCEVO_PROJECTS_ROOT", "RESEARCHLOOP_PROJECTS_ROOT"),
+    WORKSPACE_ROOT / "projects",
+)
 
 FORBIDDEN_HARNESS_WRITE_ROOTS = [
     KNOWLEDGE_ROOT / "_harness",
-    WORKSPACE_ROOT / "知识库" / "_harness",
+    WORKSPACE_ROOT / "knowledge" / "_harness",
 ]
 
 REGISTRY_FILES = {
@@ -68,7 +86,6 @@ REGISTRY_FILES = {
     "asset_evolution": REGISTRY_DIR / "asset_evolution.yaml",
     "workflow_improvement_backlog": REGISTRY_DIR / "workflow_improvement_backlog.yaml",
     "decisions": REGISTRY_DIR / "decisions.yaml",
-    "upstream_workflows": REGISTRY_DIR / "upstream_workflows.yaml",
     "visual_to_editable_skills": REGISTRY_DIR / "visual_to_editable_skills.yaml",
     "ppt_assets": REGISTRY_DIR / "ppt_assets.yaml",
     "model_assets": REGISTRY_DIR / "model_assets.yaml",
@@ -204,39 +221,9 @@ def path_exists(raw: Any) -> bool:
     if not raw:
         return False
     try:
-        return resolve_path_alias(Path(str(raw))).exists()
+        return Path(str(raw)).exists()
     except OSError:
         return False
-
-
-def configured_path_aliases() -> list[tuple[Path, Path]]:
-    raw = os.environ.get("RESEARCHLOOP_LEGACY_ROOT_ALIASES", "")
-    aliases: list[tuple[Path, Path]] = []
-    for entry in raw.split(";"):
-        if not entry.strip() or "=" not in entry:
-            continue
-        source, target = entry.split("=", 1)
-        aliases.append((Path(source).expanduser(), Path(target).expanduser()))
-    return aliases
-
-
-def _is_subpath_no_resolve(path: Path, root: Path) -> bool:
-    try:
-        path.absolute().relative_to(root.absolute())
-        return True
-    except ValueError:
-        return False
-
-
-def resolve_path_alias(path: Path) -> Path:
-    if path.exists():
-        return path
-    for source, target in configured_path_aliases():
-        if _is_subpath_no_resolve(path, source):
-            candidate = target / path.absolute().relative_to(source.absolute())
-            if candidate.exists():
-                return candidate
-    return path
 
 
 def first_heading(path: Path) -> str:

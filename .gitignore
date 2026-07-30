@@ -5,7 +5,6 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-*.egg-info/
 .coverage
 htmlcov/
 
@@ -17,7 +16,6 @@ htmlcov/
 .codex/
 .mcp.json
 !.mcp.json.example
-external/
 *.pem
 *.key
 *.p12
@@ -30,9 +28,7 @@ external/
 *.local
 *.local.*
 
-# MycEvo generated local state and traces
-.mycevo/
-.resevo/
+# ResearchLoop generated local state and traces
 runs/
 state/
 reports/health/
@@ -76,8 +72,6 @@ cache/
 *.gif
 *.webp
 !assets/readme/*.png
-!design/explorations/mycevo-diagrams/**/*.png
-!docs/design/previews/**/*.png
 *.avi
 *.mp4
 *.mov
@@ -94,15 +88,12 @@ cache/
 *.pkl
 *.pickle
 
-# Project-local research assets may keep small text manifests only
+# Project-local research assets may keep small Markdown manifests only
 research_assets/**
 !research_assets/**/
 !research_assets/**/00_asset_manifest.md
 !research_assets/**/reproduction_entry.md
 !research_assets/**/*.md
-!research_assets/**/request.yaml
-!research_assets/**/expected_route.yaml
-!research_assets/**/visual_reconstruction_manifest.yaml
 
 # OS and editor noise
 .DS_Store

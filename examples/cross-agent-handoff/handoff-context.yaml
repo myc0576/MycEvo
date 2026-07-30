@@ -1,0 +1,9 @@
+schema: mycevo.handoff_context.v1
+source_agent: Agent A
+target_agent: Agent B
+task_id: sanitized-handoff-example
+candidate_ref: candidate.yaml
+decision_ref: human-decision.yaml
+canonical: false
+required_next_action: Obtain and record an explicit human decision before canonical promotion.
+risk: Treating pending candidate material as an approved workflow.

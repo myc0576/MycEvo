@@ -6,6 +6,8 @@ on:
 
 jobs:
   test:
+    env:
+      MYCEVO_USER_ROOT: ${{ runner.temp }}/mycevo-user
     strategy:
       fail-fast: false
       matrix:

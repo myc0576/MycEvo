@@ -1,0 +1,28 @@
+name: Workflow proposal
+description: Propose a reusable workflow contract, adapter, or pack.
+title: "[Proposal]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Repeated problem
+      description: What repeats across tasks, people, or Agents?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence
+      description: What evidence shows that this method is useful and safe?
+    validations:
+      required: true
+  - type: dropdown
+    id: capture
+    attributes:
+      label: Capture level
+      options:
+        - L0 portable recipe
+        - L1 tested adapter
+        - L2 native capture proposal
+    validations:
+      required: true

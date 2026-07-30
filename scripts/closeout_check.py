@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import sys
@@ -80,7 +80,7 @@ def registry_health() -> dict[str, Any]:
                     pending_items.append({"registry": name, "id": item_id, "title": item.get("title"), "updated_at": item.get("updated_at")})
     forbidden = [{"path": str(path), "exists": path.exists()} for path in FORBIDDEN_HARNESS_WRITE_ROOTS]
     if any(row["exists"] and row["path"].lower().endswith("knowledge\\_harness") for row in forbidden):
-        errors.append("forbidden_path_exists:G:\\knowledge\\_harness")
+        errors.append("forbidden_path_exists:knowledge/_harness")
     return {
         "ok": not errors,
         "counts": counts,
@@ -99,7 +99,9 @@ def scan_research_assets() -> dict[str, Any]:
     checked: list[str] = []
     for project in projects:
         raw_path = str(project.get("path") or "")
-        if not raw_path.lower().startswith(str(PROJECTS_ROOT).lower()):
+        try:
+            Path(raw_path).resolve().relative_to(PROJECTS_ROOT.resolve())
+        except (OSError, ValueError):
             continue
         project_path = Path(raw_path)
         asset_root = project_path / "research_assets"
@@ -219,14 +221,15 @@ def run() -> dict[str, Any]:
     report_path = REPORTS_DIR / "health" / f"{today()}_closeout_health.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(report, encoding="utf-8")
-    write_json(STATE_DIR / "closeout_health.json", result)
+    state_path = STATE_DIR / "closeout_health.json"
+    write_json(state_path, result)
     write_yaml(
         run_dir / "manifest.yaml",
         {
             "schema": "research_harness_closeout_check.v1",
             "run_id": run_id,
             "created_at": datetime.now().isoformat(timespec="seconds"),
-            "outputs": [str(report_path), str(STATE_DIR / "closeout_health.json")],
+            "outputs": [str(report_path), str(state_path)],
         },
     )
     (run_dir / "closeout_report.md").write_text(report, encoding="utf-8")

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mycevo.dev/schemas/method-graph.v1.schema.json",
+  "title": "MycEvo MethodGraphVersion v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "graph_id", "version_id", "purpose", "modules", "edges", "entry_module_ids", "exit_module_ids", "lineage", "task_contract_ref", "applicability_conditions"],
+  "properties": {
+    "schema": {"const": "mycevo.method_graph.v1"},
+    "graph_id": {"$ref": "#/$defs/identifier"},
+    "version_id": {"$ref": "#/$defs/identifier"},
+    "purpose": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "modules": {"type": "array", "minItems": 1, "items": {"$ref": "module-contract.v1.schema.json"}},
+    "edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}},
+    "entry_module_ids": {"$ref": "#/$defs/nonempty_identifier_array"},
+    "exit_module_ids": {"$ref": "#/$defs/nonempty_identifier_array"},
+    "lineage": {"$ref": "#/$defs/lineage"},
+    "task_contract_ref": {"type": ["string", "null"], "minLength": 1, "maxLength": 512},
+    "applicability_conditions": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 4000}}
+  },
+  "$defs": {
+    "identifier": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nonempty_identifier_array": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/identifier"}},
+    "edge": {
+      "type": "object", "additionalProperties": false,
+      "required": ["edge_id", "kind", "source_module", "target_module", "source_port", "target_port", "label", "condition_ref", "branch_label", "join_key", "max_iterations"],
+      "properties": {
+        "edge_id": {"$ref": "#/$defs/identifier"},
+        "kind": {"enum": ["data", "sequence", "conditional", "depends_on", "evidence_for", "governed_by", "reads_memory", "writes_candidate_memory", "condition_true", "condition_false", "parallel", "loop", "fallback"]},
+        "source_module": {"$ref": "#/$defs/identifier"},
+        "target_module": {"$ref": "#/$defs/identifier"},
+        "source_port": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "target_port": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "label": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "condition_ref": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "branch_label": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "join_key": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "max_iterations": {"type": ["integer", "null"], "minimum": 1, "maximum": 10000}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "data"}}}, "then": {"properties": {"source_port": {"$ref": "#/$defs/identifier"}, "target_port": {"$ref": "#/$defs/identifier"}}}, "else": {"properties": {"source_port": {"type": "null"}, "target_port": {"type": "null"}}}},
+        {"if": {"properties": {"kind": {"enum": ["conditional", "condition_true", "condition_false", "fallback"]}}}, "then": {"properties": {"condition_ref": {"$ref": "#/$defs/identifier"}, "branch_label": {"$ref": "#/$defs/identifier"}}}},
+        {"if": {"properties": {"kind": {"const": "parallel"}}}, "then": {"properties": {"branch_label": {"$ref": "#/$defs/identifier"}, "join_key": {"$ref": "#/$defs/identifier"}}}},
+        {"if": {"properties": {"kind": {"const": "loop"}}}, "then": {"properties": {"max_iterations": {"type": "integer"}}}, "else": {"properties": {"max_iterations": {"type": "null"}}}}
+      ]
+    },
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["parent_hashes", "supersedes_hashes", "source_refs", "created_from_changeset", "source_adapter_id", "source_revision"],
+      "properties": {
+        "parent_hashes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+        "supersedes_hashes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+        "source_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 512}},
+        "created_from_changeset": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "source_adapter_id": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/identifier"}]},
+        "source_revision": {"type": ["string", "null"], "minLength": 1, "maxLength": 256}
+      }
+    }
+  }
+}

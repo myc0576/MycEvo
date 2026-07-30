@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mycevo.dev/schemas/external-proposal.v1.schema.json",
+  "title": "MycEvo ExternalProposal v1",
+  "description": "A bounded, data-only, candidate proposal. It carries no apply, evaluation, actor, promotion, runtime, or canonical-pointer authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "proposal_id", "base_graph_hash", "provenance", "deltas"],
+  "properties": {
+    "schema": {"const": "mycevo.external_proposal.v1"},
+    "proposal_id": {"$ref": "#/$defs/identifier"},
+    "base_graph_hash": {"$ref": "#/$defs/sha256"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "deltas": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000000000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/delta"}
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "pattern": ".*\\S.*"
+    },
+    "identifier_array": {
+      "type": "array",
+      "maxItems": 1000000000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/identifier"}
+    },
+    "text_array": {
+      "type": "array",
+      "maxItems": 1000000000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/text"}
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "source_id", "source_refs", "evidence_refs", "confidence", "falsification_conditions"],
+      "properties": {
+        "source_kind": {"$ref": "#/$defs/identifier"},
+        "source_id": {"$ref": "#/$defs/identifier"},
+        "source_refs": {"$ref": "#/$defs/text_array"},
+        "evidence_refs": {"$ref": "#/$defs/text_array"},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "falsification_conditions": {"$ref": "#/$defs/text_array"}
+      }
+    },
+    "expectation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "object_id", "sha256"],
+      "properties": {
+        "kind": {"enum": ["module", "edge"]},
+        "object_id": {"$ref": "#/$defs/identifier"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected_entry_module_ids", "result_entry_module_ids", "expected_exit_module_ids", "result_exit_module_ids"],
+      "properties": {
+        "expected_entry_module_ids": {"$ref": "#/$defs/identifier_array"},
+        "result_entry_module_ids": {
+          "allOf": [
+            {"$ref": "#/$defs/identifier_array"},
+            {"minItems": 1}
+          ]
+        },
+        "expected_exit_module_ids": {"$ref": "#/$defs/identifier_array"},
+        "result_exit_module_ids": {
+          "allOf": [
+            {"$ref": "#/$defs/identifier_array"},
+            {"minItems": 1}
+          ]
+        }
+      }
+    },
+    "patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expectations", "remove_module_ids", "remove_edge_ids", "put_modules", "put_edges", "boundary"],
+      "properties": {
+        "expectations": {
+          "type": "array",
+          "maxItems": 1000000000,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/expectation"}
+        },
+        "remove_module_ids": {"$ref": "#/$defs/identifier_array"},
+        "remove_edge_ids": {"$ref": "#/$defs/identifier_array"},
+        "put_modules": {
+          "type": "array",
+          "maxItems": 1000000000,
+          "uniqueItems": true,
+          "items": {"$ref": "module-contract.v1.schema.json"}
+        },
+        "put_edges": {
+          "type": "array",
+          "maxItems": 1000000000,
+          "uniqueItems": true,
+          "items": {"$ref": "method-graph.v1.schema.json#/$defs/edge"}
+        },
+        "boundary": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/boundary"}
+          ]
+        }
+      }
+    },
+    "delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delta_id", "category", "operation", "patch", "rationale", "depends_on", "conflicts_with", "evidence_refs", "falsification_conditions", "evaluator_requirement_refs"],
+      "properties": {
+        "delta_id": {"$ref": "#/$defs/identifier"},
+        "category": {"enum": ["topology", "content", "rules", "memory"]},
+        "operation": {"enum": ["add", "delete", "merge", "split", "replace", "reorder"]},
+        "patch": {"$ref": "#/$defs/patch"},
+        "rationale": {"$ref": "#/$defs/text"},
+        "depends_on": {"$ref": "#/$defs/identifier_array"},
+        "conflicts_with": {"$ref": "#/$defs/identifier_array"},
+        "evidence_refs": {"$ref": "#/$defs/text_array"},
+        "falsification_conditions": {"$ref": "#/$defs/text_array"},
+        "evaluator_requirement_refs": {"$ref": "#/$defs/identifier_array"}
+      }
+    }
+  }
+}

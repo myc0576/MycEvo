@@ -1,0 +1,6 @@
+read:
+  - inputs/**
+write:
+  - build/**
+network: false
+subprocess: []

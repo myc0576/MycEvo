@@ -1,0 +1,331 @@
+schema_version: "1.0"
+fixture_id: adapter.researchloop.paper_lifecycle.v1
+adapter:
+  adapter_id: researchloop.paper_lifecycle
+  source_kind: local_public_workflow
+  source_revision: sha256:33eea51342844670b87d623f4411901fd2c831c3c074ef5f612165980425e257
+  source_refs:
+    - workflows/paper_lifecycle/paper_state_machine.yaml
+    - workflows/paper_lifecycle/validation_rules.yaml
+    - workflows/paper_driven/paper_loop.md
+    - workflows/paper_driven/reviewer_gate.md
+    - workflows/self_evolution_loop/README.md
+  source_pins:
+    - {ref: workflows/paper_lifecycle/paper_state_machine.yaml, sha256: 954661f51d890e8ad88955e6e7e2730ea0935c347867d4fab04d053ed2137231}
+    - {ref: workflows/paper_lifecycle/validation_rules.yaml, sha256: f26fb89bbd8c3faa2ca5a3924c9e6d7633e8f78282a433c6a7abfd3d238f495b}
+    - {ref: workflows/paper_driven/paper_loop.md, sha256: 764228d3ac5622d8dd649559577d5d80001fbdb7145e722cb22eb5b8cc0565dd}
+    - {ref: workflows/paper_driven/reviewer_gate.md, sha256: b473d0ba0d2813d00e4044e18c551af364a541deb7b383f3ce49ad742ebb74c6}
+    - {ref: workflows/self_evolution_loop/README.md, sha256: 275d8777b3318d71896032d5228feef9d5be9ab7623f9a379b7aed52218e3222}
+  sanitization:
+    synthetic_only: true
+    contains_private_paths: false
+    contains_private_data: false
+    contains_secrets: false
+  normalization_rules:
+    - The ordered source-state list becomes explicit sequence edges.
+    - Every source gate gets pass, review, and fail-closed outcomes.
+    - Domain vocabulary stays in artifact types, rule refs, or adapter_extensions.
+    - Reuse and canonical promotion remain separate human-controlled decisions.
+
+method_graph:
+  graph_id: graph.researchloop.paper_lifecycle
+  version_id: graph.researchloop.paper_lifecycle.v1
+  purpose: Turn a research question into an evidence-linked paper package and candidate reusable assets.
+  applicability_conditions:
+    - The task is paper-driven research with inspectable artifacts and human review gates.
+  entry_module_ids: [research_brief]
+  exit_module_ids: [closeout]
+  lineage:
+    parent_version_id: null
+    source_adapter_id: researchloop.paper_lifecycle
+    source_revision: sha256:33eea51342844670b87d623f4411901fd2c831c3c074ef5f612165980425e257
+    content_hash_policy: computed_from_canonical_json
+  modules:
+    - module_id: research_brief
+      version_id: research_brief.v1
+      portable_kind: input
+      purpose: Capture the research goal, constraints, and decision boundary.
+      applicability_conditions: [A new paper-driven research task has been accepted.]
+      inputs: [{name: task_request, type: task_contract}]
+      outputs: [{name: brief, type: research_brief}]
+      preconditions: [task_request_is_available]
+      postconditions: [goal_and_scope_are_explicit]
+      required_evidence: []
+      produced_evidence: [{type: artifact_ref, role: research_brief}]
+      side_effect_class: candidate_artifact_write
+      permission_requirements: [workspace_read, candidate_write]
+      failure_modes: [goal_is_ambiguous, forbidden_side_effects_are_missing]
+      counterexamples: [A free-form prompt with no decision boundary is not a valid brief.]
+      fallback_refs: []
+      cost: low
+      risk: low
+      reversibility: clean
+      content_refs: [paper_contract_template]
+      rule_refs: [idea_gate]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_state: idea}
+
+    - module_id: literature_and_claim_design
+      version_id: literature_and_claim_design.v1
+      portable_kind: transform
+      purpose: Bind target literature, gaps, and proposed claims to source pointers.
+      applicability_conditions: [A scoped research brief exists.]
+      inputs: [{name: brief, type: research_brief}]
+      outputs:
+        - {name: source_pack, type: literature_source_pack}
+        - {name: claim_matrix, type: claim_evidence_matrix}
+      preconditions: [goal_and_scope_are_explicit]
+      postconditions: [claims_have_source_pointers_and_falsification_conditions]
+      required_evidence: [{type: source_ref, minimum_count: 1}]
+      produced_evidence: [{type: artifact_ref, role: claim_matrix}]
+      side_effect_class: candidate_artifact_write
+      permission_requirements: [workspace_read, candidate_write]
+      failure_modes: [missing_source_pointer, claim_has_no_falsification_condition]
+      counterexamples: [A citation-free method summary cannot support a claim.]
+      fallback_refs: [research_brief]
+      cost: medium
+      risk: medium
+      reversibility: clean
+      content_refs: [literature_card_template, claim_evidence_matrix_template]
+      rule_refs: [idea_gate, design_gate]
+      memory_refs: [{mode: read, ref: reusable_knowledge_index}]
+      runtime_bindings: []
+      adapter_extensions:
+        source_states: [literature_targeting, gap_and_claim_design]
+
+    - module_id: experiment_and_evidence
+      version_id: experiment_and_evidence.v1
+      portable_kind: transform
+      purpose: Record an externally executed experiment and bind outputs to claims.
+      applicability_conditions: [At least one falsifiable claim and experiment plan exists.]
+      inputs:
+        - {name: claim_matrix, type: claim_evidence_matrix}
+        - {name: external_run, type: run_envelope_ref}
+      outputs: [{name: evidence_pack, type: benchmark_evidence_pack}]
+      preconditions: [claims_have_source_pointers_and_falsification_conditions]
+      postconditions: [evidence_has_identity_hash_and_replay_reference]
+      required_evidence:
+        - {type: run_envelope_ref, minimum_count: 1}
+        - {type: immutable_artifact_hash, minimum_count: 1}
+      produced_evidence: [{type: evidence_pack_ref, role: experiment_result}]
+      side_effect_class: candidate_artifact_write
+      permission_requirements: [workspace_read, candidate_write]
+      failure_modes: [missing_run_envelope, stale_or_unhashed_evidence, evaluation_set_not_frozen]
+      counterexamples: [A successful Agent run without frozen evidence is not validation.]
+      fallback_refs: [literature_and_claim_design]
+      cost: high
+      risk: medium
+      reversibility: clean
+      content_refs: [experiment_plan_template, reproduction_entry_template]
+      rule_refs: [experiment_gate, frozen_evidence_immutable]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_state: experiment_and_evidence, execution_owner: external_agent_or_human}
+
+    - module_id: evidence_validation
+      version_id: evidence_validation.v1
+      portable_kind: validation
+      purpose: Evaluate admissible held-out evidence without changing canonical state.
+      applicability_conditions: [A frozen evidence pack exists.]
+      inputs: [{name: evidence_pack, type: benchmark_evidence_pack}]
+      outputs: [{name: evaluation, type: evaluation_result}]
+      preconditions: [evidence_has_identity_hash_and_replay_reference]
+      postconditions: [evaluation_is_bound_to_evidence_and_evaluator_hashes]
+      required_evidence: [{type: evidence_pack_ref, minimum_count: 1}]
+      produced_evidence: [{type: evaluation_result_ref, role: evidence_validation}]
+      side_effect_class: audit_append_only
+      permission_requirements: [workspace_read, audit_append]
+      failure_modes: [held_out_evidence_missing, evaluator_drift, inferred_edge_used_for_promotion]
+      counterexamples: [An inferred relationship cannot satisfy the evidence gate.]
+      fallback_refs: [experiment_and_evidence]
+      cost: medium
+      risk: low
+      reversibility: clean
+      content_refs: []
+      rule_refs: [experiment_gate, evidence_admissibility]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_gate: experiment_gate}
+
+    - module_id: figure_and_manuscript_loop
+      version_id: figure_and_manuscript_loop.v1
+      portable_kind: transform
+      purpose: Iterate figures and manuscript claims until quality review passes or the bound is exhausted.
+      applicability_conditions: [An evaluation result and claim matrix exist.]
+      inputs:
+        - {name: evaluation, type: evaluation_result}
+        - {name: claim_matrix, type: claim_evidence_matrix}
+      outputs:
+        - {name: figure_registry, type: figure_registry}
+        - {name: manuscript_story, type: manuscript_storyboard}
+      preconditions: [evaluation_is_bound_to_evidence_and_evaluator_hashes]
+      postconditions: [figures_and_claims_are_traceable_to_admissible_evidence]
+      required_evidence: [{type: evaluation_result_ref, minimum_count: 1}]
+      produced_evidence: [{type: review_record_ref, role: figure_and_manuscript_review}]
+      side_effect_class: candidate_artifact_write
+      permission_requirements: [workspace_read, candidate_write]
+      failure_modes: [figure_source_missing, claim_exceeds_evidence, review_iteration_limit_reached]
+      counterexamples: [A persuasive figure without source-data provenance does not pass review.]
+      fallback_refs: [experiment_and_evidence]
+      cost: high
+      risk: medium
+      reversibility: clean
+      content_refs: [figure_registry_template, manuscript_storyboard_template]
+      rule_refs: [figure_gate, manuscript_gate, reviewer_gate]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions:
+        source_states: [figure_quality_loop, manuscript_story]
+        loop_bound: 3
+
+    - module_id: release_and_dissemination
+      version_id: release_and_dissemination.v1
+      portable_kind: transform
+      purpose: Package approved manuscript artifacts and a bounded dissemination set.
+      applicability_conditions: [Figure and manuscript review has passed.]
+      inputs:
+        - {name: figure_registry, type: figure_registry}
+        - {name: manuscript_story, type: manuscript_storyboard}
+      outputs:
+        - {name: release_pack, type: release_pack}
+        - {name: dissemination_pack, type: dissemination_pack}
+      preconditions: [figures_and_claims_are_traceable_to_admissible_evidence]
+      postconditions: [release_outputs_preserve_claim_and_source_boundaries]
+      required_evidence: [{type: review_record_ref, minimum_count: 1}]
+      produced_evidence: [{type: artifact_ref, role: release_pack}]
+      side_effect_class: candidate_artifact_write
+      permission_requirements: [workspace_read, candidate_write]
+      failure_modes: [publication_boundary_violation, missing_source_manifest]
+      counterexamples: [Private raw data copied into a public package is invalid.]
+      fallback_refs: [figure_and_manuscript_loop]
+      cost: medium
+      risk: high
+      reversibility: clean
+      content_refs: [release_pack_template, dissemination_pack_template]
+      rule_refs: [release_gate, dissemination_gate, public_private_boundary]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_states: [release_packaging, dissemination]}
+
+    - module_id: retro_and_candidate_memory
+      version_id: retro_and_candidate_memory.v1
+      portable_kind: memory
+      purpose: Convert verified lessons into candidate-only reusable assets and workflow-improvement proposals.
+      applicability_conditions: [The research task has review and release evidence.]
+      inputs:
+        - {name: release_pack, type: release_pack}
+        - {name: evaluation, type: evaluation_result}
+      outputs:
+        - {name: asset_candidate, type: reusable_asset_candidate}
+        - {name: improvement_candidate, type: evolution_changeset_ref}
+      preconditions: [release_outputs_preserve_claim_and_source_boundaries]
+      postconditions: [all_reuse_outputs_remain_candidate_or_pending_validation]
+      required_evidence:
+        - {type: evaluation_result_ref, minimum_count: 1}
+        - {type: review_record_ref, minimum_count: 1}
+      produced_evidence: [{type: candidate_record_ref, role: reuse_candidate}]
+      side_effect_class: candidate_memory_write
+      permission_requirements: [workspace_read, candidate_write, candidate_memory_write]
+      failure_modes: [unverified_claim_presented_as_fact, automatic_reusable_status_requested]
+      counterexamples: [Closeout alone cannot promote an asset to reusable.]
+      fallback_refs: [release_and_dissemination]
+      cost: low
+      risk: medium
+      reversibility: clean
+      content_refs: [research_retro_template, reusable_asset_card_template]
+      rule_refs: [asset_candidate_gate, improvement_gate]
+      memory_refs:
+        - {mode: read, ref: reusable_knowledge_index}
+        - {mode: write_candidate, ref: reusable_knowledge_candidates}
+      runtime_bindings: []
+      adapter_extensions: {source_states: [research_retro, asset_review, workflow_improvement]}
+
+    - module_id: human_reuse_gate
+      version_id: human_reuse_gate.v1
+      portable_kind: decision
+      purpose: Record an authorized accept, reject, or defer decision for each candidate delta.
+      applicability_conditions: [At least one candidate asset or improvement exists.]
+      inputs:
+        - {name: candidates, type: candidate_set}
+        - {name: evaluation, type: evaluation_result}
+      outputs: [{name: human_decision, type: human_decision}]
+      preconditions: [all_reuse_outputs_remain_candidate_or_pending_validation]
+      postconditions: [decision_is_explicit_and_per_delta]
+      required_evidence: [{type: evaluation_result_ref, minimum_count: 1}]
+      produced_evidence: [{type: human_decision_ref, role: reuse_decision}]
+      side_effect_class: decision_record_append_only
+      permission_requirements: [workspace_read, audit_append, authorized_human_decision]
+      failure_modes: [actor_not_authorized, partial_decision_applied_globally]
+      counterexamples: [Approval of topology does not imply approval of memory.]
+      fallback_refs: [retro_and_candidate_memory]
+      cost: low
+      risk: high
+      reversibility: review_required
+      content_refs: []
+      rule_refs: [reuse_gate, human_promotion_required]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_gate: reuse_gate}
+
+    - module_id: closeout
+      version_id: closeout.v1
+      portable_kind: output
+      purpose: Append traceable registry and decision records without overwriting history.
+      applicability_conditions: [A per-delta human decision exists or all candidates are deferred.]
+      inputs: [{name: human_decision, type: human_decision}]
+      outputs: [{name: closeout_record, type: closeout_record}]
+      preconditions: [decision_is_explicit_and_per_delta]
+      postconditions: [history_is_append_only_and_restartable]
+      required_evidence: [{type: human_decision_ref, minimum_count: 1}]
+      produced_evidence: [{type: audit_record_ref, role: closeout}]
+      side_effect_class: audit_append_only
+      permission_requirements: [workspace_read, audit_append]
+      failure_modes: [lineage_missing, prior_record_overwrite_requested]
+      counterexamples: [A mutable latest-only record is not an auditable closeout.]
+      fallback_refs: [human_reuse_gate]
+      cost: low
+      risk: low
+      reversibility: append_compensating_record
+      content_refs: [closeout_contract_template]
+      rule_refs: [closeout_gate, append_only_history]
+      memory_refs: []
+      runtime_bindings: []
+      adapter_extensions: {source_state: closeout}
+
+  edges:
+    - {edge_id: e01, source_module_id: research_brief, target_module_id: literature_and_claim_design, edge_type: sequence}
+    - {edge_id: e02, source_module_id: literature_and_claim_design, target_module_id: experiment_and_evidence, edge_type: sequence}
+    - {edge_id: e03, source_module_id: experiment_and_evidence, target_module_id: evidence_validation, edge_type: evidence_for}
+    - {edge_id: e04, source_module_id: evidence_validation, target_module_id: figure_and_manuscript_loop, edge_type: conditional, condition: "evaluation.status == 'pass'"}
+    - {edge_id: e05, source_module_id: evidence_validation, target_module_id: experiment_and_evidence, edge_type: fallback, condition: "evaluation.status in ['fail', 'drift']"}
+    - {edge_id: e06, source_module_id: figure_and_manuscript_loop, target_module_id: figure_and_manuscript_loop, edge_type: loop, condition: "review.status == 'revise'", max_iterations: 3}
+    - {edge_id: e07, source_module_id: figure_and_manuscript_loop, target_module_id: release_and_dissemination, edge_type: conditional, condition: "review.status == 'pass'"}
+    - {edge_id: e08, source_module_id: release_and_dissemination, target_module_id: retro_and_candidate_memory, edge_type: sequence}
+    - {edge_id: e09, source_module_id: retro_and_candidate_memory, target_module_id: human_reuse_gate, edge_type: writes_candidate_memory}
+    - {edge_id: e10, source_module_id: human_reuse_gate, target_module_id: closeout, edge_type: governed_by}
+    - {edge_id: e11, source_module_id: literature_and_claim_design, target_module_id: retro_and_candidate_memory, edge_type: reads_memory}
+    - {edge_id: e12, source_module_id: evidence_validation, target_module_id: human_reuse_gate, edge_type: depends_on}
+
+fitness:
+  source_gaps_resolved_by_adapter:
+    - gap_id: research.explicit_transitions_missing
+      blocking_if_unresolved: true
+      resolution: Ordered source states become sequence edges; gate outcomes become conditional and fallback edges.
+    - gap_id: research.loop_bound_not_machine_readable
+      blocking_if_unresolved: true
+      resolution: The adapter declares the source review policy as max_iterations 3; exhaustion fails closed.
+    - gap_id: research.permissions_and_side_effects_implicit
+      blocking_if_unresolved: true
+      resolution: Every normalized module declares side_effect_class and permission_requirements.
+    - gap_id: research.domain_fields_in_source_artifacts
+      blocking_if_unresolved: true
+      resolution: Claim, paper, figure, and venue fields remain artifact schemas or adapter_extensions.
+  blocking_gaps: []
+  non_blocking_gaps:
+    - Exact venue names, manuscript section labels, and figure numbering are presentation concerns.
+    - External experiment scheduling belongs to runtime adapters; the core remains static and non-executing.
+  domain_leakage:
+    forbidden_core_keys_present: []
+    adapter_only_keys: [source_state, source_states, source_gate, execution_owner, loop_bound]
+  schema_freeze_verdict: ready

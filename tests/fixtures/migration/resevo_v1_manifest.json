@@ -1,0 +1,133 @@
+{
+  "schema": "mycevo.migration_golden.v1",
+  "migration": "resevo-to-mycevo",
+  "source_format": "resevo-workspace-v1",
+  "target_format": "mycevo-compatibility-v1",
+  "classifications": {
+    "lossless": [
+      "file_bytes",
+      "persistent_id",
+      "status_text",
+      "created_at",
+      "provenance_reference",
+      "append_only_trace"
+    ],
+    "lossy_candidate_only": [
+      "legacy_apply_allowed",
+      "legacy_score_only_acceptance",
+      "legacy_promotion_status",
+      "legacy_promotion_flag"
+    ],
+    "ambiguous": [
+      "conflicting_workspace_roots",
+      "existing_target_with_different_bytes",
+      "generated_fallback_id"
+    ],
+    "rejected_unrepresentable": [
+      "opaque_automatic_execution_authority",
+      "unknown_lifecycle_status",
+      "opaque_executable_hook"
+    ]
+  },
+  "mapping_cases": [
+    {
+      "name": "candidate_status",
+      "source_object_type": "knowledge",
+      "source_id": "knowledge-stable-001",
+      "source_status": "pending validation",
+      "mapping_class": "lossless",
+      "target_status": "pending validation",
+      "promotion_allowed": false
+    },
+    {
+      "name": "legacy_apply_allowed",
+      "source_object_type": "evolution_decision",
+      "source_id": "decision-stable-001",
+      "source_status": "candidate_accepted_for_experiment",
+      "apply_allowed": true,
+      "mapping_class": "lossy_candidate_only",
+      "target_status": "candidate",
+      "promotion_allowed": false
+    },
+    {
+      "name": "legacy_promotion_status",
+      "source_object_type": "knowledge",
+      "source_id": "knowledge-validated-001",
+      "source_status": "validated",
+      "mapping_class": "lossy_candidate_only",
+      "target_status": "candidate",
+      "promotion_allowed": false,
+      "legacy_status": "validated"
+    },
+    {
+      "name": "unknown_status",
+      "source_object_type": "knowledge",
+      "source_id": "knowledge-unknown-001",
+      "source_status": "magically_done",
+      "mapping_class": "rejected_unrepresentable",
+      "reject_code": "MIGRATION_STATUS_UNKNOWN"
+    },
+    {
+      "name": "future_schema",
+      "source_object_type": "registry",
+      "source_schema_version": 99,
+      "mapping_class": "rejected_unrepresentable",
+      "reject_code": "MIGRATION_SCHEMA_UNKNOWN"
+    },
+    {
+      "name": "opaque_hook",
+      "source_object_type": "executable_hook",
+      "opaque_executable_hook": true,
+      "mapping_class": "rejected_unrepresentable",
+      "reject_code": "MIGRATION_AUTHORITY_UNSUPPORTED"
+    },
+    {
+      "name": "target_collision",
+      "source_object_type": "file",
+      "mapping_class": "ambiguous",
+      "reject_code": "MIGRATION_TARGET_CONFLICT"
+    },
+    {
+      "name": "generated_fallback_id",
+      "source_object_type": "knowledge",
+      "source_status": "candidate",
+      "mapping_class": "ambiguous",
+      "reject_code": "MIGRATION_ID_UNSTABLE"
+    },
+    {
+      "name": "downgrade",
+      "source_object_type": "method_graph",
+      "direction": "mycevo-to-resevo",
+      "mapping_class": "rejected_unrepresentable",
+      "reject_code": "MIGRATION_DOWNGRADE_UNSUPPORTED"
+    }
+  ],
+  "files": [
+    {
+      "path": "config.yaml",
+      "content": "product: Resevo\nversion: 1\nworkspace_id: workspace-stable-001\n"
+    },
+    {
+      "path": "registry/knowledge.yaml",
+      "content": "version: 1\nknowledge:\n- id: knowledge-stable-001\n  title: Stable legacy record\n  status: pending validation\n  created_at: '2026-07-01T08:30:00+08:00'\n  provenance:\n    run_id: run-stable-001\n"
+    },
+    {
+      "path": "state/trace.jsonl",
+      "content": "{\"event\":\"candidate_recorded\",\"id\":\"knowledge-stable-001\",\"status\":\"pending validation\"}\n"
+    },
+    {
+      "path": "state/opaque.bin",
+      "content_base64": "77u/bGluZTENCmxpbmUyAP8=",
+      "sha256": "5e70f89a1afa8466d32a1e00baa8761df7569b828eda76d2c76622422f7665a5"
+    }
+  ],
+  "expected": {
+    "legacy_tree_preserved": true,
+    "backup_tree_byte_identical": true,
+    "copied_legacy_files_byte_identical": true,
+    "persistent_id": "knowledge-stable-001",
+    "status": "pending validation",
+    "second_apply_status": "backup_exists",
+    "automatic_promotion": false
+  }
+}
